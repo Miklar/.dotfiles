@@ -5,6 +5,7 @@
 echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>/Users/miklar/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+brew install stow
 brew install git
 
 brew install --cask google-chrome
