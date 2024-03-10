@@ -1,0 +1,60 @@
+# This is Git's per-user configuration file.
+[user]
+  name = Micke Larsson
+  email = micke@miklar.se
+[alias]
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  lol = log --graph --decorate --pretty=oneline --abbrev-commit
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  chm = checkout master
+  swm = switch main
+  sw = switch
+  cp = cherry-pick
+  st = status -s
+  cl = clone
+  ch = checkout
+  df = diff --word-diff
+  dc = diff --cached
+  cm = commit -m
+  cam = commit -a -m
+  ca = commit --amend
+  amend = commit --amend
+  last = log -1 HEAD --stat
+  gl = config --global -l
+[color]
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+[core]
+#  pager = diff-so-fancy | less --tabs=4 -RFX
+  pager = delta
+
+  autocrlf = input
+  safecrlf = false
+
+[help]
+	autocorrect = 20
+[pull]
+	ff = only
+
+[interactive]
+  diffFilter = delta --color-only
+[add.interactive]
+  useBuiltind = false
+[delta]
+  features = gruvbox-dark
+  navigate = true   # use n and N to move between diff sections
+  light = false
+  line-numbers = true
+  side-by-side = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+[init]
+	defaultBranch = main
