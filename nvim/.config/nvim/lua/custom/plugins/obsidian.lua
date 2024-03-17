@@ -16,6 +16,12 @@ return {
 
     -- see below for full list of optional dependencies 👇
   },
+  config = function(_, opts)
+    require('obsidian').setup(opts)
+
+    vim.keymap.set('n', '<leader>oo', ':ObsidianOpen<Space>')
+    vim.keymap.set('n', '<leader>on', ':ObsidianNew<Space>')
+  end,
   opts = {
     workspaces = {
       --{

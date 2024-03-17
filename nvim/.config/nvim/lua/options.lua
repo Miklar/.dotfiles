@@ -45,3 +45,8 @@ vim.opt.isfname:append '@-@'
 
 -- Set updatetime to 50 milliseconds
 vim.opt.updatetime = 50
+
+-- To get Obsidian to work
+vim.opt.conceallevel = 1
+
+vim.opt.cursorline = true

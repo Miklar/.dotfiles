@@ -119,4 +119,20 @@ alias t=todo.sh
 # source ~/.zshr
 alias sc="exec zsh"
 
+UTILS='/Users/miklar/work/earlybird/utils'
+alias forw="$UTILS/env-port-forward.sh"
+
+bnauth() {
+  export BIRDNEST_API_TOKEN=$($UTILS/birdnest/birdnest-auth.sh $1 $2)
+}
+alias bn="$UTILS/birdnest/birdnest.sh"
+
+alias ts=~/.local/bin/tmux-sessionizer
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/miklar/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/miklar/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/miklar/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/miklar/google-cloud-sdk/completion.zsh.inc'; fi
