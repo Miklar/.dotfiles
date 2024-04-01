@@ -50,3 +50,6 @@ vim.opt.updatetime = 50
 vim.opt.conceallevel = 1
 
 vim.opt.cursorline = true
+
+vim.opt.wildmenu = true
+vim.opt.wildmode = 'longest:full,full'
