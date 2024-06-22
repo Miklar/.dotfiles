@@ -53,3 +53,6 @@ vim.opt.cursorline = true
 
 vim.opt.wildmenu = true
 vim.opt.wildmode = 'longest:full,full'
+
+vim.o.ignorecase = true
+vim.o.smartcase = true

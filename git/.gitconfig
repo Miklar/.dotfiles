@@ -39,6 +39,8 @@
 	autocorrect = 20
 [pull]
 	ff = only
+[push]
+    autosetupremote = true
 
 [interactive]
   diffFilter = delta --color-only

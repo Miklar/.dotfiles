@@ -73,5 +73,11 @@ vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
 vim.keymap.set('n', '<leader>wr', '<cmd>set wrap!<CR>')
 vim.keymap.set('n', '<leader><leader>e', '<cmd>Neotree toggle reveal<CR>')
 
-vim.keymap.set('n', '<C-S-I>', vim.lsp.buf.signature_help)
+vim.api.nvim_set_keymap('n', '<C-S-I>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', { noremap = true, silent = true })
+
 -- vim: ts=2 sts=2 sw=2 et
