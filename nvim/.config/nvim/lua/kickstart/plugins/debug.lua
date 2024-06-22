@@ -20,6 +20,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'Cliffback/netcoredbg-macOS-arm64.nvim',
 
     'nvim-neotest/nvim-nio',
   },
@@ -27,11 +28,11 @@ return {
     local dap = require 'dap'
     local dapui = require 'dapui'
 
-    -- dap.adapters.coreclr = {
-    --   type = 'executable',
-    --   command = '/usr/local/bin/netcoredbg',
-    --   args = { '--interpreter=vscode' },
-    -- }
+    dap.adapters.coreclr = {
+      type = 'executable',
+      command = '/usr/local/bin/netcoredbg',
+      args = { '--interpreter=vscode' },
+    }
     -- dap.configurations.cs = {
     --   {
     --     type = 'coreclr',
@@ -42,6 +43,57 @@ return {
     --     end,
     --   },
     -- }
+
+    vim.g.dotnet_build_project = function()
+      local default_path = vim.fn.getcwd() .. '/'
+      if vim.g['dotnet_last_proj_path'] ~= nil then
+        default_path = vim.g['dotnet_last_proj_path']
+      end
+      local path = vim.fn.input('Path to your *proj file', default_path, 'file')
+      vim.g['dotnet_last_proj_path'] = path
+      local cmd = 'dotnet build -c Debug ' .. path .. ' > /dev/null'
+      print ''
+      print('Cmd to execute: ' .. cmd)
+      local f = os.execute(cmd)
+      if f == 0 then
+        print '\nBuild: ✔️ '
+      else
+        print('\nBuild: ❌ (code: ' .. f .. ')')
+      end
+    end
+
+    vim.g.dotnet_get_dll_path = function()
+      local request = function()
+        return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+      end
+
+      if vim.g['dotnet_last_dll_path'] == nil then
+        vim.g['dotnet_last_dll_path'] = request()
+      else
+        if vim.fn.confirm('Do you want to change the path to dll?\n' .. vim.g['dotnet_last_dll_path'], '&yes\n&no', 2) == 1 then
+          vim.g['dotnet_last_dll_path'] = request()
+        end
+      end
+
+      return vim.g['dotnet_last_dll_path']
+    end
+
+    local config = {
+      {
+        type = 'coreclr',
+        name = 'launch - netcoredbg',
+        request = 'launch',
+        program = function()
+          if vim.fn.confirm('Should I recompile first?', '&yes\n&no', 2) == 1 then
+            vim.g.dotnet_build_project()
+          end
+          return vim.g.dotnet_get_dll_path()
+        end,
+      },
+    }
+
+    dap.configurations.cs = config
+
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
@@ -101,5 +153,6 @@ return {
 
     -- Install golang specific config
     require('dap-go').setup()
+    require('netcoredbg-macOS-arm64').setup(require 'dap')
   end,
 }
