@@ -121,6 +121,10 @@ alias t=todo.sh
 # source ~/.zshr
 alias sc="exec zsh"
 
+export CGO_CFLAGS="-I$(brew --prefix portmidi)/include"
+export CGO_LDFLAGS="-L$(brew --prefix portmidi)/lib -lportmidi"
+
+
 UTILS='/Users/miklar/work/earlybird/utils'
 alias forw="$UTILS/env-port-forward.sh"
 

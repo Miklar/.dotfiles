@@ -53,8 +53,15 @@
   line-numbers = true
   side-by-side = true
 
+; [merge]
+;     conflictstyle = diff3
 [merge]
-    conflictstyle = diff3
+  tool = nvimdiff
+[mergetool]
+  prompt = false
+  keepBackup = false
+[mergetool "nvimdiff"]
+  layout = "LOCAL,BASE,REMOTE / MERGED"
 
 [diff]
     colorMoved = default
