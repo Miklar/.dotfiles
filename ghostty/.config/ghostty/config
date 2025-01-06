@@ -1,0 +1,7 @@
+theme = tokyonight
+
+font-size = 16
+
+macos-titlebar-style = hidden
+window-padding-x = 6
+

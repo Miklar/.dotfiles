@@ -1,5 +1,8 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:/Users/miklar/.local/bin:$PATH
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 export SPACESHIP_CONFIG="$HOME/.config/spaceship/spaceship.zsh"
 
@@ -105,16 +108,17 @@ eval "$(zoxide init zsh)"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias v=nvim
+alias vo=nvim
+alias v='NVIM_APPNAME=nvim-2025 nvim'
 alias d=docker
 alias dc='docker compose'
 alias e='eza -al --group-directories-first'
 alias et='eza --group-directories-first --tree --level 5'
 alias ff=fzf
 
-alias ec="v $HOME/.zshrc"
-alias ac="v $HOME/.oh-my-zsh/custom/alias.zsh"
-alias vc="v $HOME/.config/nvim/"
+alias ez="v $HOME/.zshrc"
+alias ea="v $HOME/.oh-my-zsh/custom/alias.zsh"
+alias ev="v $HOME/.config/nvim-2025/"
 
 alias t=todo.sh
 
@@ -153,3 +157,13 @@ export NVM_DIR="$HOME/.nvm"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
