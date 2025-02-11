@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# i do this to every directory i am in
+# 1 is neovim
+# 2 is where i run commands
+
+if [[ "$(pwd)" == $HOME/personal ]]; then
+    clear
+    return
+fi
+tmux new-window -dn scratch
+v .
+clear
+

@@ -11,6 +11,15 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
+-- Disable highlighting during search
+vim.opt.hlsearch = false
+-- Enable incremental search
+vim.opt.incsearch = true
+-- Disable highlighting during search
+vim.opt.hlsearch = false
+-- Enable incremental search
+vim.opt.incsearch = true
+
 vim.opt.signcolumn = "yes:1"
 
 -- Set scrolloff to 8 lines
@@ -46,8 +55,9 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 -- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- List navigation
--- vim.keymap.set('n', '<C-k>', '<cmd>cnext<CR>zz')
--- vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz')
+vim.keymap.set('n', '<M-k>', '<cmd>cprev<CR>zz')
+vim.keymap.set('n', '<M-j>', '<cmd>cnext<CR>zz')
+vim.keymap.set('n', '<M-q>', '<cmd>cclose<CR>')
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
 -- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
 
@@ -64,7 +74,6 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
 -- Toggle word wrap
 vim.keymap.set('n', '<leader>wr', '<cmd>set wrap!<CR>')
-
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
