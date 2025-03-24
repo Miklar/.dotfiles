@@ -1,3 +1,3 @@
 spaceship remove dotnet
 spaceship remove docker
-spaceship remove gcloud
+# spaceship remove gcloud

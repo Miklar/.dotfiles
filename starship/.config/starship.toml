@@ -1,0 +1,44 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+# A minimal left prompt
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$jobs\
+$cmd_duration\
+$fill\
+$nodejs\
+$docker_context\
+$custom
+$character"""
+
+# move the rest of the prompt to the right
+# right_format = """"""
+
+[fill]
+symbol = ' '
+
+[git_branch]
+format = '[$symbol$branch ]($style)'
+
+[gcloud]
+format = '[$symbol$active]($style)'
+style = 'bold blue'
+
+[custom.cluster]
+format = '[$output]($style)'
+description = "Displays current config for kubectl"
+command = "kubectl config current-context | sed 's/gke_bird-nest-\\([a-z]*\\)_.*/[\\1]/g'"
+when = true
+style = "bold green"
+
+[custom.dbask]
+description = "Displays current config for dbask"
+command = "dbask -current_port"
+when = true
+style = "bold blue"

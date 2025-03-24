@@ -4,7 +4,7 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-export SPACESHIP_CONFIG="$HOME/.config/spaceship/spaceship.zsh"
+# export SPACESHIP_CONFIG="$HOME/.config/spaceship/spaceship.zsh"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -13,7 +13,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="spaceship"
+# ZSH_THEME="spaceship"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -116,6 +116,7 @@ alias e='eza -al --group-directories-first'
 alias et='eza --group-directories-first --tree --level 5'
 alias ff=fzf
 
+
 alias ez="v $HOME/.zshrc"
 alias ea="v $HOME/.oh-my-zsh/custom/alias.zsh"
 alias ev="v $HOME/.config/nvim-2025/"
@@ -172,3 +173,6 @@ fpath=(/Users/miklar/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 # End of Docker CLI completions
+
+eval "$(starship init zsh)"
+
