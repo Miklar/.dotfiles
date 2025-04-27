@@ -11,6 +11,10 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
+vim.opt.wrap = false
+
+vim.opt.swapfile = false
+
 -- Disable highlighting during search
 vim.opt.hlsearch = false
 -- Enable incremental search
@@ -21,6 +25,15 @@ vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
 vim.opt.signcolumn = "yes:1"
+
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●", -- Optional: icon before the message
+    spacing = 4, -- Optional: space between text and diagnostic
+    source = "if_many", -- Show the source name if multiple LSPs
+  },
+  severity_sort = true,
+})
 
 -- Set scrolloff to 8 lines
 vim.opt.scrolloff = 8
@@ -60,7 +73,6 @@ vim.keymap.set('n', '<M-j>', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '<M-q>', '<cmd>cclose<CR>')
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
 -- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
-
 
 -- copy/paste
 vim.keymap.set('x', '<leader>p', '"_dP')

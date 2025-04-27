@@ -73,6 +73,8 @@ alias t=todo.sh
 # source ~/.zshr
 alias sc="exec zsh"
 
+export RIPGREP_CONFIG_PATH=$HOME/.config/.ripgreprc
+
 export CGO_CFLAGS="-I$(brew --prefix portmidi)/include"
 export CGO_LDFLAGS="-L$(brew --prefix portmidi)/lib -lportmidi"
 

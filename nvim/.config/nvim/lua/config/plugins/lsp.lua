@@ -1,8 +1,9 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    -- "https://github.com/neovim/nvim-lspconfig",
     dependencies = {
-      "saghen/blink.cmp",
+      -- "saghen/blink.cmp",
       {
         "folke/lazydev.nvim",
         ft = "lua", -- only load on lua files
@@ -16,12 +17,43 @@ return {
       },
     },
     config = function()
-      local lspconfig = require("lspconfig")
-      local capabilities = require("blink.cmp").get_lsp_capabilities()
+      -- local lspconfig = require("lspconfig")
+      -- local capabilities = require("blink.cmp").get_lsp_capabilities()
+      --
+      -- lspconfig.csharp_ls.setup({ capabilities = capabilities })
+      -- lspconfig.lua_ls.setup({ capabilities = capabilities })
+      -- lspconfig.gopls.setup({ capabilities = capabilities })
 
-      lspconfig.csharp_ls.setup({ capabilities = capabilities })
-      lspconfig.lua_ls.setup({ capabilities = capabilities })
-      lspconfig.gopls.setup({ capabilities = capabilities })
+      -- Rounded borders for all LSP floating windows
+      local border_opts = { border = "rounded" }
+
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+        vim.lsp.handlers.hover,
+        border_opts
+      )
+
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+        vim.lsp.handlers.signature_help,
+        border_opts
+      )
+
+      -- 🔹 If your hover window still has no border, patch the fallback too:
+      local orig_util = vim.lsp.util.open_floating_preview
+      function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+        opts = opts or {}
+        opts.border = opts.border or "rounded"
+        return orig_util(contents, syntax, opts, ...)
+      end
+
+      vim.lsp.enable('bashls');
+      -- vim.lsp.enable('csharp_ls');
+      vim.lsp.enable('omnisharp');
+      vim.lsp.enable('gopls');
+      vim.lsp.enable('lua_ls');
+      vim.lsp.enable('marksman');
+      vim.lsp.enable('terraform_lsp');
+      vim.lsp.enable('ts_ls');
+      vim.lsp.enable('yamlls');
 
       vim.keymap.set("n", "<leader>rn", function()
         vim.lsp.buf.rename()
@@ -41,6 +73,8 @@ return {
         vim.lsp.buf.implementation()
       end, { desc = "vim.lsp.buf.implementation()" })
 
+
+
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -57,7 +91,8 @@ return {
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-T>.
-          map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+          -- map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+          map("gd", function() vim.lsp.util.show_document({ focus = true }) end, "[G]oto [D]efinition")
 
           -- Find references for the word under your cursor.
           -- map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')

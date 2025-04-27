@@ -4,7 +4,7 @@ return {
     build = ":TSUpdate",
     config = function()
       require 'nvim-treesitter.configs'.setup {
-        ensure_installed = { "c", "c_sharp", "go", "lua", "terraform", "vim", "vimdoc", "vue", "query", "yaml", "toml", "tmux", "markdown", "markdown_inline" },
+        ensure_installed = { "c", "c_sharp", "go", "lua", "terraform", "vim", "vimdoc", "vue", "query", "yaml", "toml", "tmux", "markdown", "markdown_inline", "sql", "json" },
 
         -- Automatically install missing parsers when entering buffer
         auto_install = false,
