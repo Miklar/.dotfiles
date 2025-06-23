@@ -1,3 +1,9 @@
+-- Make sure to setup `mapleader` and `maplocalleader` before
+-- loading lazy.nvim so that mappings are correct.
+-- This is also a good place to setup other settings (vim.opt)
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 require("config.lazy")
 
 vim.opt.tabstop = 4
@@ -13,8 +19,19 @@ vim.opt.termguicolors = true
 
 vim.opt.wrap = false
 
-vim.opt.swapfile = false
+-- Set to true if you have a Nerd Font installed and selected in the terminal
+vim.g.have_nerd_font = true
 
+vim.opt.swapfile = false
+-- Save undo history
+vim.o.undofile = true
+-- Enable mouse mode, can be useful for resizing splits for example!
+vim.o.mouse = 'a'
+-- Don't show the mode, since it's already in the status line
+vim.o.showmode = false
+-- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+vim.o.ignorecase = true
+vim.o.smartcase = true
 -- Disable highlighting during search
 vim.opt.hlsearch = false
 -- Enable incremental search
@@ -23,20 +40,38 @@ vim.opt.incsearch = true
 vim.opt.hlsearch = false
 -- Enable incremental search
 vim.opt.incsearch = true
+
+-- Decrease update time
+vim.o.updatetime = 250
+
+-- Configure how new splits should be opened
+vim.o.splitright = true
+vim.o.splitbelow = true
 
 vim.opt.signcolumn = "yes:1"
 
-vim.diagnostic.config({
-  virtual_text = {
-    prefix = "●", -- Optional: icon before the message
-    spacing = 4, -- Optional: space between text and diagnostic
-    source = "if_many", -- Show the source name if multiple LSPs
-  },
-  severity_sort = true,
-})
+-- Sets how neovim will display certain whitespace characters in the editor.
+vim.o.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
+-- Preview substitutions live, as you type!
+vim.o.inccommand = 'split'
+
+-- Show which line your cursor is on
+vim.o.cursorline = false
+
 
 -- Set scrolloff to 8 lines
 vim.opt.scrolloff = 8
+
+-- [[ Basic Keymaps ]]
+
+-- Clear highlights on search when pressing <Esc> in normal mode
+--  See `:help hlsearch`
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 vim.keymap.set("n", "<leader><leader>x", "<cmd>source % <CR>")
 vim.keymap.set("n", "<leader>x", ":.lua<CR>")
@@ -62,10 +97,10 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
--- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
--- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
--- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
--- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- List navigation
 vim.keymap.set('n', '<M-k>', '<cmd>cprev<CR>zz')
@@ -86,6 +121,10 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
 -- Toggle word wrap
 vim.keymap.set('n', '<leader>wr', '<cmd>set wrap!<CR>')
+
+
+-- [[ Basic Autocommands ]]
+--  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode

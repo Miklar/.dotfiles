@@ -3,6 +3,9 @@ export PATH=$HOME/bin:/usr/local/bin:/Users/miklar/.local/bin:$PATH
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+export PATH=$HOME/development/flutter/bin:$PATH
+export PATH=$HOME/.gem/bin:$PATH
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
 # export SPACESHIP_CONFIG="$HOME/.config/spaceship/spaceship.zsh"
 
