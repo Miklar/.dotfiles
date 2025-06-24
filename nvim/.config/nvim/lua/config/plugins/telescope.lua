@@ -21,14 +21,12 @@ return {
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
+
+    enabled = true,
+
     config = function()
       require("telescope").setup({
-        pickers = {
-          find_files = {
-            hidden = false,
-            -- theme = "default"
-          },
-        },
+        pickers = { },
         extensions = {
         ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -40,31 +38,31 @@ return {
       pcall(require('telescope').load_extension, 'ui-select')
 
       local builtin = require 'telescope.builtin'
-      vim.keymap.set("n", "<leader>fh", builtin.help_tags)
+      -- vim.keymap.set("n", "<leader>fh", builtin.help_tags)
       vim.keymap.set("n", "<leader>fd", builtin.find_files)
-      vim.keymap.set("n", "<leader>fw", builtin.grep_string)
-      vim.keymap.set("n", "<leader>fr", builtin.resume)
-      vim.keymap.set("n", "<leader>fk", builtin.keymaps)
-      vim.keymap.set("n", "<leader>fb", builtin.buffers)
-      -- vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>fD', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-
-      -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
-
-      vim.keymap.set("n", "<leader>en", function()
-        builtin.find_files({
-          cwd = vim.fn.stdpath("config"),
-        })
-      end)
-
-      require("config.telescope.multigrep").setup()
+      -- vim.keymap.set("n", "<leader>fw", builtin.grep_string)
+      -- vim.keymap.set("n", "<leader>fr", builtin.resume)
+      -- vim.keymap.set("n", "<leader>fk", builtin.keymaps)
+      -- vim.keymap.set("n", "<leader>fb", builtin.buffers)
+      -- -- vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      -- vim.keymap.set('n', '<leader>fD', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      --
+      -- -- Slightly advanced example of overriding default behavior and theme
+      -- vim.keymap.set('n', '<leader>/', function()
+      --   -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+      --   builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+      --     winblend = 10,
+      --     previewer = false,
+      --   })
+      -- end, { desc = '[/] Fuzzily search in current buffer' })
+      --
+      -- vim.keymap.set("n", "<leader>en", function()
+      --   builtin.find_files({
+      --     cwd = vim.fn.stdpath("config"),
+      --   })
+      -- end)
+      --
+      -- require("config.telescope.multigrep").setup()
     end,
   },
 }
