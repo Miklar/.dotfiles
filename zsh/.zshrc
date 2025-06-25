@@ -7,6 +7,12 @@ export PATH=$HOME/development/flutter/bin:$PATH
 export PATH=$HOME/.gem/bin:$PATH
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
+# FZF
+# Setting fd as the default source for fzf
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
+# To apply the command to CTRL-T as well
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 # export SPACESHIP_CONFIG="$HOME/.config/spaceship/spaceship.zsh"
 
 # Path to your oh-my-zsh installation.
@@ -76,7 +82,7 @@ alias t=todo.sh
 # source ~/.zshr
 alias sc="exec zsh"
 
-export RIPGREP_CONFIG_PATH=$HOME/.config/.ripgreprc
+export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/.ripgreprc
 
 export CGO_CFLAGS="-I$(brew --prefix portmidi)/include"
 export CGO_LDFLAGS="-L$(brew --prefix portmidi)/lib -lportmidi"
