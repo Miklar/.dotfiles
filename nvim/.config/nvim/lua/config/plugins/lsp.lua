@@ -17,7 +17,7 @@ return {
       "mason-org/mason-lspconfig.nvim",
       { "mason-org/mason.nvim", opts = { registries = { "github:crashdummyy/mason-registry", "github:mason-org/mason-registry" } } },
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',    opts = {} },
       "saghen/blink.cmp",
       "ibhagwan/fzf-lua",
     },
@@ -57,7 +57,7 @@ return {
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('gca', vim.lsp.buf.code_action, '[G]oto [C]ode [A]ction', { 'n', 'x' })
+          map('gca', require('fzf-lua').lsp_code_actions, '', { 'n', 'x' })
 
           -- Find references for the word under your cursor.
           map('grr', require('fzf-lua').lsp_references, '[G]oto [R]eferences')
@@ -117,6 +117,14 @@ return {
             })
           end
 
+          -- Autoformat on save
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            pattern = "*",
+            callback = function()
+              vim.lsp.buf.format({ async = false }) -- use async = true for non-blocking
+            end,
+          })
+
           -- The following code creates a keymap to toggle inlay hints in your
           -- code, if the language server you are using supports them
           --
@@ -157,7 +165,6 @@ return {
           end,
         },
       }
-
     end,
   },
 }

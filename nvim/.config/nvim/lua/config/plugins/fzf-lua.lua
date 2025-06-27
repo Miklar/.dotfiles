@@ -5,9 +5,7 @@ return {
     local fzf = require('fzf-lua')
     fzf.setup({
       "hide",
-      files = {
-        cmd = "fd --type f --strip-cwd-prefix",
-      }})
+      })
 
       local fzflua = require 'fzf-lua'
       vim.keymap.set("n", "<leader>fh", fzflua.helptags)
