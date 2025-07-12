@@ -6,6 +6,7 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 export PATH=$HOME/development/flutter/bin:$PATH
 export PATH=$HOME/.gem/bin:$PATH
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH="/usr/local/netcoredbg:$PATH"
 
 # FZF
 # Setting fd as the default source for fzf

@@ -6,23 +6,41 @@
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
+local function rebuild_project(co, path)
+  local spinner = require("easy-dotnet.ui-modules.spinner").new()
+  spinner:start_spinner "Building"
+  vim.fn.jobstart(string.format("dotnet build %s", path), {
+    on_exit = function(_, return_code)
+      if return_code == 0 then
+        spinner:stop_spinner "Built successfully"
+      else
+        spinner:stop_spinner("Build failed with exit code " .. return_code, vim.log.levels.ERROR)
+        error "Build failed"
+      end
+      coroutine.resume(co)
+    end,
+  })
+  coroutine.yield()
+end
+
 return {
   -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
-    -- Creates a beautiful debugger UI
+    -- -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
-
-    -- Required dependency for nvim-dap-ui
+    --
+    -- -- Required dependency for nvim-dap-ui
     'nvim-neotest/nvim-nio',
-
-    -- Installs the debug adapters for you
+    --
+    -- -- Installs the debug adapters for you
     'mason-org/mason.nvim',
-    'jay-babu/mason-nvim-dap.nvim',
-
-    -- Add your own debuggers here
-    'leoluz/nvim-dap-go',
+    -- Can not use mason-nvim-dap because we need to compile netcoredbg ourselfs
+    -- 'jay-babu/mason-nvim-dap.nvim',
+    --
+    -- -- Add your own debuggers here
+    -- 'leoluz/nvim-dap-go',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -80,50 +98,67 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+    local dotnet = require "easy-dotnet"
 
-    require('mason-nvim-dap').setup {
-      -- Makes a best effort to setup the various debuggers with
-      -- reasonable debug configurations
-      automatic_installation = true,
+    local function file_exists(path)
+      local stat = vim.loop.fs_stat(path)
+      return stat and stat.type == "file"
+    end
 
-      -- You can provide additional configuration to the handlers,
-      -- see mason-nvim-dap README for more information
-      handlers = {},
+    local debug_dll = nil
 
-      -- You'll need to check that you have the required things installed
-      -- online, please don't ask me how to install them :)
-      ensure_installed = {
-        -- Update this to ensure that you have the debuggers for the langs you want
-        'delve',
-        'coreclr'
-      },
+    local function ensure_dll()
+      if debug_dll ~= nil then
+        return debug_dll
+      end
+      local dll = dotnet.get_debug_dll()
+      debug_dll = dll
+      return dll
+    end
+
+    dap.adapters.coreclr = {
+      type = "executable",
+      command = "netcoredbg",
+      args = { "--interpreter=vscode" },
     }
-
-    dap.set_log_level("DEBUG")
 
     dap.configurations.cs = {
       {
-        type = 'coreclr',
-        name = 'Launch .NET Core',
-        request = 'launch',
-        program = function()
-          return coroutine.create(function(coro)
-            local dlls = vim.fn.glob("**/bin/**/*.dll", true, true)
-            require('fzf-lua').fzf_exec(dlls, {
-              prompt = 'Select DLL to debug> ',
-              actions = {
-                ['default'] = function(selected)
-                  coroutine.resume(coro, selected[1])
-                end
-              }
-            })
-          end)
+        type = "coreclr",
+        name = "launch - netcoredbg",
+        request = "launch",
+        env = function()
+          local dll = ensure_dll()
+          local vars = dotnet.get_environment_variables(dll.project_name, dll.absolute_project_path)
+          return vars or nil
         end,
-        cwd = vim.fn.getcwd(),
-        stopAtEntry = true,
-        console = "integratedTerminal", -- 💥 Required to prevent instant exit
+        program = function()
+          local dll = ensure_dll()
+          local co = coroutine.running()
+          rebuild_project(co, dll.project_path)
+          if not file_exists(dll.target_path) then
+            error("Project has not been built, path: " .. dll.target_path)
+          end
+          return dll.target_path
+        end,
+        cwd = function()
+          local dll = ensure_dll()
+          return dll.absolute_project_path
+        end,
       },
     }
+
+
+    vim.keymap.set("n", "q", function()
+      dap.close()
+      dapui.close()
+    end, {})
+
+    dap.listeners.before["event_terminated"]["easy-dotnet"] = function()
+      debug_dll = nil
+    end
+
+    --
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
@@ -158,17 +193,21 @@ return {
     --   vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
     -- end
 
+    dap.listeners.before.attach.dapui_config = dapui.open
+    dap.listeners.before.launch.dapui_config = dapui.open
+    dap.listeners.before.event_terminated.dapui_config = dapui.close
+    dap.listeners.before.event_exited.dapui_config = dapui.close
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
-
+    --
     -- Install golang specific config
-    require('dap-go').setup {
-      delve = {
-        -- On Windows delve must be run attached or it crashes.
-        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-        detached = vim.fn.has 'win32' == 0,
-      },
-    }
+    -- require('dap-go').setup {
+    --   delve = {
+    --     -- On Windows delve must be run attached or it crashes.
+    --     -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
+    --     detached = vim.fn.has 'win32' == 0,
+    --   },
+    -- }
   end,
 }

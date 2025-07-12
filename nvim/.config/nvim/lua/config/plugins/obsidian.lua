@@ -1,24 +1,23 @@
 return {
   {
-    "epwalsh/obsidian.nvim",
+    "obsidian-nvim/obsidian.nvim",
     version = "*", -- recommended, use latest release instead of latest commit
     lazy = false,
-    ft = "markdown",
+    -- ft = "markdown",
     -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    -- event = {
-    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-    --   -- refer to `:h file-pattern` for more examples
-    --   "BufReadPre path/to/my-vault/*.md",
-    --   "BufNewFile path/to/my-vault/*.md",
-    -- },
+    event = {
+      -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+      -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+      -- refer to `:h file-pattern` for more examples
+      "BufReadPre /Users/miklar/Library/Mobile Documents/iCloud~md~obsidian/Documents/zettelkasten/*.md",
+      "BufNewFile /Users/miklar/Library/Mobile Documents/iCloud~md~obsidian/Documents/zettelkasten/*.md",
+    },
     dependencies = {
       -- Required.
       "nvim-lua/plenary.nvim",
       "saghen/blink.cmp",
-      "nvim-telescope/telescope.nvim",
+      "ibhagwan/fzf-lua",
       "nvim-treesitter/nvim-treesitter",
-      -- see below for full list of optional dependencies 👇
     },
     config = function()
       require("obsidian").setup({
@@ -33,7 +32,7 @@ return {
         -- Where to put new notes. Valid options are
         --  * "current_dir" - put new notes in same directory as the current buffer.
         --  * "notes_subdir" - put new notes in the default notes subdirectory.
-        new_notes_location = "notes_subdir",
+        new_notes_location = "current_dir",
 
         -- Optional, for templates (see below).
         templates = {
