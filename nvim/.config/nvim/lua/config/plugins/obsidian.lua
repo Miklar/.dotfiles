@@ -49,7 +49,7 @@ return {
           -- YYYY/MM-MMMM/YYYY-MM-DD-dddd
           date_format = "%Y-%m-%d-%A",
           alias_format = "%B %-d, %Y",
-          default_tags = { "daily-notes" },
+          default_tags = { "dev-log" },
           template = "Template, Daily Note.md"
         },
 
@@ -66,9 +66,10 @@ return {
           { noremap = false, expr = true, buffer = true }),
         vim.keymap.set("n", "<leader>ch", require("obsidian").util.toggle_checkbox, { buffer = true }),
         vim.keymap.set("n", "<cr>", require("obsidian").util.smart_action, { expr = true, buffer = true }),
-        vim.keymap.set("n", "<leader>bn", "<cmd>ObsidianNew<CR>", { buffer = true }),
-        vim.keymap.set("n", "<leader>bd", "<cmd>ObsidianToday<CR>", { buffer = true }),
-        vim.keymap.set("n", "<leader>bt", "<cmd>ObsidianTags<CR>", { buffer = true }),
+        vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>"),
+        vim.keymap.set("n", "<leader>ol", "<cmd>ObsidianToday<CR>"),
+        vim.keymap.set("n", "<leader>ot", "<cmd>ObsidianTags<CR>"),
+        vim.keymap.set("n", "<leader>fo", "<cmd>ObsidianQuickSwitch<CR>"),
 
         wiki_link_func = "use_alias_only",
         -- Either 'wiki' or 'markdown'.
@@ -117,7 +118,7 @@ return {
         ---@diagnostic disable-next-line: missing-fields
         picker = {
           -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
-          name = "telescope.nvim",
+          name = "fzf-lua",
           -- Optional, configure key mappings for the picker. These are the defaults.
           -- Not all pickers support all mappings.
           ---@diagnostic disable-next-line: missing-fields
@@ -143,7 +144,7 @@ return {
         sort_reversed = true,
 
       })
-      vim.opt.conceallevel = 1
+      vim.opt.conceallevel = 0
     end
   }
 }
