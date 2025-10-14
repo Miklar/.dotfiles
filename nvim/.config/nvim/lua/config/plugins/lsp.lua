@@ -22,9 +22,6 @@ return {
       "ibhagwan/fzf-lua",
     },
     config = function()
-      require("mason-lspconfig").setup()
-      require("roslyn").setup()
-
       -- Rounded borders for all LSP floating windows
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
 
@@ -121,7 +118,20 @@ return {
           vim.api.nvim_create_autocmd("BufWritePre", {
             pattern = "*",
             callback = function()
-              vim.lsp.buf.format({ async = false }) -- use async = true for non-blocking
+              local clients = vim.lsp.get_clients({ bufnr = 0 })
+              local can_format = false
+
+              for _, client in ipairs(clients) do
+                if client.server_capabilities
+                    and client.server_capabilities.documentFormattingProvider then
+                  can_format = true
+                  break
+                end
+              end
+
+              if can_format then
+                vim.lsp.buf.format({ async = false })
+              end
             end,
           })
 

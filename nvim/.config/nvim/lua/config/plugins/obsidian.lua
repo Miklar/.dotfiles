@@ -146,7 +146,8 @@ return {
         sort_by = "modified",
         sort_reversed = true,
       })
-      -- vim.opt.conceallevel = 0
+
+      vim.opt.conceallevel = 1
     end,
   },
 }
