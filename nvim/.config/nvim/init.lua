@@ -136,3 +136,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- Insert current date in buffer
+vim.keymap.set("n", "<leader>d", function()
+  vim.api.nvim_put({ os.date("%Y-%m-%d") }, "c", true, true)
+end, { desc = "Insert today's date in ISO format" })

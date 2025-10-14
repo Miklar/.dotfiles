@@ -9,7 +9,13 @@ return {
       require('render-markdown').setup({
         -- Whether markdown should be rendered by default.
         enabled = true,
+
         render_modes = { 'n', 'c', 't' },
+        completions = { lsp = { enabled = true } },
+        heading = {
+          position = 'inline',
+          backgrounds = {}
+        },
       })
     end
   }

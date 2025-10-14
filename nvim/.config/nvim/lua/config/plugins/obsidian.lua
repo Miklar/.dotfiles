@@ -3,6 +3,7 @@ return {
     "obsidian-nvim/obsidian.nvim",
     version = "*", -- recommended, use latest release instead of latest commit
     lazy = false,
+    enabled = true,
     -- ft = "markdown",
     -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
     event = {
@@ -28,6 +29,8 @@ return {
           },
         },
 
+        legacy_commands = false,
+
         notes_subdir = "00 Inbox",
         -- Where to put new notes. Valid options are
         --  * "current_dir" - put new notes in same directory as the current buffer.
@@ -50,26 +53,26 @@ return {
           date_format = "%Y-%m-%d-%A",
           alias_format = "%B %-d, %Y",
           default_tags = { "dev-log" },
-          template = "Template, Daily Note.md"
+          template = "Template, Daily Note.md",
         },
 
         -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
         ---@diagnostic disable-next-line: missing-fields
         completion = {
           -- Set to false to disable completion.
-          nvim_cmp = false, -- lets wait for blink support
+          blink = true, -- lets wait for blink support
           -- Trigger completion at 2 chars.
           min_chars = 2,
+          create_new = true,
         },
 
-        vim.keymap.set("n", "gf", require("obsidian").util.gf_passthrough,
-          { noremap = false, expr = true, buffer = true }),
+        -- vim.keymap.set("n", "gf", require("obsidian").util.gf_passthrough, { noremap = false, expr = true, buffer = true }),
         vim.keymap.set("n", "<leader>ch", require("obsidian").util.toggle_checkbox, { buffer = true }),
         vim.keymap.set("n", "<cr>", require("obsidian").util.smart_action, { expr = true, buffer = true }),
-        vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>"),
-        vim.keymap.set("n", "<leader>ol", "<cmd>ObsidianToday<CR>"),
-        vim.keymap.set("n", "<leader>ot", "<cmd>ObsidianTags<CR>"),
-        vim.keymap.set("n", "<leader>fo", "<cmd>ObsidianQuickSwitch<CR>"),
+        vim.keymap.set("n", "<leader>on", "<cmd>Obsidian new<CR>"),
+        vim.keymap.set("n", "<leader>ol", "<cmd>Obsidian today<CR>"),
+        vim.keymap.set("n", "<leader>ot", "<cmd>Obsidian tags<CR>"),
+        vim.keymap.set("n", "<leader>fo", "<cmd>Obsidian quick_switch<CR>"),
 
         wiki_link_func = "use_alias_only",
         -- Either 'wiki' or 'markdown'.
@@ -96,7 +99,7 @@ return {
           return suffix
         end,
 
-        note_frontmatter_func = function(note)
+        frontmatter_func = function(note)
           -- Add the title of the note as an alias.
           if note.title then
             note:add_alias(note.title)
@@ -142,9 +145,8 @@ return {
         -- that `:ObsidianQuickSwitch` will show the notes sorted by latest modified time
         sort_by = "modified",
         sort_reversed = true,
-
       })
-      vim.opt.conceallevel = 0
-    end
-  }
+      -- vim.opt.conceallevel = 0
+    end,
+  },
 }
