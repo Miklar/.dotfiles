@@ -1,0 +1,7 @@
+{
+  "Console WriteLine": {
+    "prefix": "cwfisk",
+    "body": ["Console.WriteLine(${1:\"\"});"],
+    "description": "Console.WriteLine"
+  }
+}

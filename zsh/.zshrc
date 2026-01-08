@@ -74,11 +74,12 @@ alias e='eza -al --group-directories-first'
 alias et='eza --group-directories-first --tree --level 5'
 alias ff=fzf
 
-alias ez="v $HOME/.zshrc"
-alias ea="v $HOME/.oh-my-zsh/custom/alias.zsh"
-alias ev="v $HOME/.config/nvim/"
+alias vz="v $HOME/.zshrc"
+alias va="v $HOME/.oh-my-zsh/custom/alias.zsh"
+alias vv="v $HOME/.config/nvim/"
+alias vc=vv
 
-alias t=todo.sh
+# alias t=todo.sh
 
 # source ~/.zshr
 alias sc="exec zsh"

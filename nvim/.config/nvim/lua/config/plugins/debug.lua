@@ -40,7 +40,7 @@ return {
     -- 'jay-babu/mason-nvim-dap.nvim',
     --
     -- -- Add your own debuggers here
-    -- 'leoluz/nvim-dap-go',
+    'leoluz/nvim-dap-go',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -100,6 +100,8 @@ return {
     local dapui = require 'dapui'
     local dotnet = require "easy-dotnet"
 
+    require('dap-go').setup()
+
     local function file_exists(path)
       local stat = vim.loop.fs_stat(path)
       return stat and stat.type == "file"
@@ -147,6 +149,8 @@ return {
         end,
       },
     }
+
+    dap.configurations.go = {}
 
 
     vim.keymap.set("n", "q", function()

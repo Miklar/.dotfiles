@@ -1,10 +1,9 @@
 return {
   {
     "saghen/blink.cmp",
-    dependencies = "rafamadriz/friendly-snippets",
     enabled = true,
     version = "*",
-
+    dependencies = { "L3MON4D3/LuaSnip" },
     opts = {
       keymap = { preset = "default" },
 
@@ -13,12 +12,19 @@ return {
         nerd_font_variant = "mono",
       },
 
+      snippets = {
+        preset = "luasnip",
+      },
+      sources = {
+        default = { "lsp", "path", "buffer", "snippets" },
+      },
+
       completion = {
         list = {
           selection = {
             -- preselect = true,
             -- auto_insert = true
-          }
+          },
         },
         documentation = {
           window = {
