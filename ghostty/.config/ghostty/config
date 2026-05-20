@@ -4,5 +4,8 @@ font-size = 16
 font-feature = -calt
 
 macos-titlebar-style = hidden
-window-padding-x = 6
+window-padding-x = 8
+
+scrollback-limit = 33554432
+
 

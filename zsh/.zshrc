@@ -89,6 +89,10 @@ export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/.ripgreprc
 export CGO_CFLAGS="-I$(brew --prefix portmidi)/include"
 export CGO_LDFLAGS="-L$(brew --prefix portmidi)/lib -lportmidi"
 
+# Use Ctrl-X Ctrl-E to edit current command line in editor
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
 
 UTILS='/Users/miklar/work/earlybird/utils'
 alias forw="$UTILS/env-port-forward.sh"
