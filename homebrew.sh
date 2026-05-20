@@ -30,6 +30,7 @@ brew install starship
 brew install tmux
 brew install yazi
 brew install zoxide
+brew install worktrunk && wt config shell install
 
 brew install nvm
 mkdir ~/.nvm
