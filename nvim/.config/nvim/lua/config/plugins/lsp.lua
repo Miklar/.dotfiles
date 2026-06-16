@@ -110,22 +110,17 @@ return {
             })
           end
 
-          -- Autoformat on save
+          -- Autoformat on save (augroup per buffer prevents stacking when multiple clients attach)
           vim.api.nvim_create_autocmd("BufWritePre", {
-            pattern = "*",
+            group = vim.api.nvim_create_augroup("miklar-lsp-format-" .. event.buf, { clear = true }),
+            buffer = event.buf,
             callback = function()
               local clients = vim.lsp.get_clients({ bufnr = 0 })
-              local can_format = false
-
               for _, c in ipairs(clients) do
                 if c.server_capabilities and c.server_capabilities.documentFormattingProvider then
-                  can_format = true
+                  vim.lsp.buf.format({ async = false })
                   break
                 end
-              end
-
-              if can_format then
-                vim.lsp.buf.format({ async = false })
               end
             end,
           })

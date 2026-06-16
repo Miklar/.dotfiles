@@ -12,8 +12,8 @@ vim.o.ts = 4
 vim.o.et = true
 
 -- Line numbering
-vim.wo.number = true
-vim.wo.relativenumber = true
+vim.opt.number = true
+vim.opt.relativenumber = true
 
 vim.opt.termguicolors = true
 
