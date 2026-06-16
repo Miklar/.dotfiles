@@ -16,7 +16,6 @@ return {
     dependencies = {
       -- Required.
       "nvim-lua/plenary.nvim",
-      "saghen/blink.cmp",
       "ibhagwan/fzf-lua",
       "nvim-treesitter/nvim-treesitter",
     },
@@ -56,12 +55,7 @@ return {
           template = "Template, Daily Note.md",
         },
 
-        -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
-        ---@diagnostic disable-next-line: missing-fields
         completion = {
-          -- Set to false to disable completion.
-          blink = true, -- lets wait for blink support
-          -- Trigger completion at 2 chars.
           min_chars = 2,
           create_new = true,
         },
@@ -74,9 +68,10 @@ return {
         vim.keymap.set("n", "<leader>ot", "<cmd>Obsidian tags<CR>"),
         vim.keymap.set("n", "<leader>fo", "<cmd>Obsidian quick_switch<CR>"),
 
-        wiki_link_func = "use_alias_only",
-        -- Either 'wiki' or 'markdown'.
-        preferred_link_style = "wiki",
+        link = {
+          style = "wiki",
+          wiki_link_func = "use_alias_only",
+        },
 
         -- Optional, customize how note IDs are generated given an optional title.
         ---@param title string|?
