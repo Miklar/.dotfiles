@@ -9,6 +9,14 @@ return {
       "nvim-neotest/neotest-go",
       "Issafalcon/neotest-dotnet",
     },
+    keys = {
+      { "<leader>tn", desc = "Run nearest test" },
+      { "<leader>tf", desc = "Run file tests" },
+      { "<leader>ts", desc = "Toggle summary" },
+      { "<leader>to", desc = "Open test output" },
+      { "<leader>tO", desc = "Close test output" },
+      { "<leader>ta", desc = "Run all tests" },
+    },
     config = function()
       require("neotest").setup({
         adapters = {
