@@ -94,6 +94,20 @@ return {
       end,
       desc = 'Debug: See last session result.',
     },
+    {
+      '<F9>',
+      function()
+        require('dap').run({
+          type = "coreclr",
+          name = "attach - Aspire",
+          request = "attach",
+          processId = function()
+            return require("dap.utils").pick_process({ filter = "dotnet" })
+          end,
+        })
+      end,
+      desc = 'Debug: Attach to Aspire process',
+    },
   },
   config = function()
     local dap = require 'dap'

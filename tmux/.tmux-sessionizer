@@ -8,8 +8,8 @@ if [[ "$(pwd)" == $HOME/personal ]]; then
     clear
     return
 fi
-tmux new-window -dn scratch
 tmux new-window -dn claude "claude"
+tmux new-window -dn scratch
 v .
 clear
 
