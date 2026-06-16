@@ -35,22 +35,7 @@ snippets/                         — VSCode-style snippet JSON files
 | oil.nvim | File explorer |
 | neotest | Test runner |
 | easy-dotnet | .NET project tooling |
-| claudecode.nvim | Claude Code integration |
 | octo.nvim | GitHub PRs/issues |
-
-## Claude Code keymaps (`<leader>a`)
-
-| Key | Action |
-|-----|--------|
-| `<leader>ac` | Toggle Claude panel |
-| `<leader>af` | Focus Claude panel |
-| `<leader>ar` | Resume last session |
-| `<leader>aC` | Continue conversation |
-| `<leader>am` | Select model |
-| `<leader>ab` | Add current buffer to context |
-| `<leader>as` | Send selection to Claude (visual) / add file from explorer |
-| `<leader>aa` | Accept diff |
-| `<leader>ad` | Deny diff |
 
 ## Adding a new plugin
 

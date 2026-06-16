@@ -5,19 +5,19 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
-
-      -- The Elixir adapter
       "jfpedroza/neotest-elixir",
+      "nvim-neotest/neotest-go",
+      "Issafalcon/neotest-dotnet",
     },
     config = function()
       require("neotest").setup({
         adapters = {
           require("neotest-elixir")({
-            -- Optional: choose mix task (defaults to "test")
             mix_task = "test",
-            -- Optional: add additional arguments for Mix
             mix_args = {},
           }),
+          require("neotest-go"),
+          require("neotest-dotnet"),
         },
       })
 
@@ -38,6 +38,10 @@ return {
       vim.keymap.set("n", "<leader>to", function()
         neotest.output.open({ enter = true })
       end, { desc = "Open test output" })
+
+      vim.keymap.set("n", "<leader>ta", function()
+        neotest.run.run(vim.fn.getcwd())
+      end, { desc = "Run all tests" })
     end
   }
 }
