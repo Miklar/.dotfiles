@@ -117,7 +117,7 @@ return {
     require('dap-go').setup()
 
     local function file_exists(path)
-      local stat = vim.loop.fs_stat(path)
+      local stat = vim.uv.fs_stat(path)
       return stat and stat.type == "file"
     end
 
@@ -164,13 +164,15 @@ return {
       },
     }
 
-    dap.configurations.go = {}
-
-
-    vim.keymap.set("n", "q", function()
-      dap.close()
-      dapui.close()
-    end, {})
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "dap-repl", "dapui_watches", "dapui_stacks", "dapui_breakpoints", "dapui_scopes", "dapui_console" },
+      callback = function(event)
+        vim.keymap.set("n", "q", function()
+          dap.close()
+          dapui.close()
+        end, { buffer = event.buf, desc = "Debug: Close DAP" })
+      end,
+    })
 
     dap.listeners.before["event_terminated"]["easy-dotnet"] = function()
       debug_dll = nil
@@ -211,10 +213,6 @@ return {
     --   vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
     -- end
 
-    dap.listeners.before.attach.dapui_config = dapui.open
-    dap.listeners.before.launch.dapui_config = dapui.open
-    dap.listeners.before.event_terminated.dapui_config = dapui.close
-    dap.listeners.before.event_exited.dapui_config = dapui.close
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close

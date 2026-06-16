@@ -50,7 +50,7 @@ return {
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map("<leader>ca", require("fzf-lua").lsp_code_actions, "", { "n", "x" })
+          map("<leader>ca", require("fzf-lua").lsp_code_actions, "Code Actions", { "n", "x" })
 
           -- Find references for the word under your cursor.
           map("gr", require("fzf-lua").lsp_references, "[G]oto [R]eferences")
