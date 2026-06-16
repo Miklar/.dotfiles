@@ -21,7 +21,7 @@ return {
         },
       })
 
-      neotest = require("neotest")
+      local neotest = require("neotest")
 
       vim.keymap.set("n", "<leader>tn", function()
         neotest.run.run()
@@ -38,6 +38,10 @@ return {
       vim.keymap.set("n", "<leader>to", function()
         neotest.output.open({ enter = true })
       end, { desc = "Open test output" })
+
+      vim.keymap.set("n", "<leader>tO", function()
+        neotest.output.close()
+      end, { desc = "Close test output" })
 
       vim.keymap.set("n", "<leader>ta", function()
         neotest.run.run(vim.fn.getcwd())
