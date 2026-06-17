@@ -145,3 +145,5 @@ if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)
 
 # Added by get-aspire-cli.sh
 export PATH="$HOME/.aspire/bin:$PATH"
+
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
