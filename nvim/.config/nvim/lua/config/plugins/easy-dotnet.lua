@@ -2,7 +2,7 @@ return {
   {
     "GustavEikaas/easy-dotnet.nvim",
     dependencies = { "nvim-lua/plenary.nvim", 'nvim-telescope/telescope.nvim', },
-    enabled = true,
+    ft = { "cs", "csproj", "fsproj", "sln" },
     config = function()
       require("easy-dotnet").setup({
         lsp = {

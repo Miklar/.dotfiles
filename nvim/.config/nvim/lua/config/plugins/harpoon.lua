@@ -4,6 +4,12 @@ return {
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
+    keys = {
+      "<leader>a", "<C-e>",
+      "<leader>h1", "<leader>h2",
+      "<C-h>", "<C-j>", "<C-k>", "<C-l>",
+      "<C-S-P>", "<C-S-N>",
+    },
     config = function()
       local harpoon = require 'harpoon'
 
