@@ -1,0 +1,67 @@
+#!/bin/sh
+# tmux-notify — tmux + OS notifier for Claude Code tasks
+# POSIX sh compatible. No bashisms.
+
+# ── locate config ─────────────────────────────────────────────────────────────
+_CONF="${NOTIFY_CONF:-$HOME/.notify.conf}"
+
+# ── defaults ──────────────────────────────────────────────────────────────────
+NOTIFY_SESSION=""
+NOTIFY_WINDOW=""
+NOTIFY_OS=1
+NOTIFY_SOUND="default"
+NOTIFY_URGENCY="normal"
+NOTIFY_INDICATOR_DURATION=10
+
+[ -f "$_CONF" ] && . "$_CONF"
+
+# env var overrides config file
+[ -n "$CLAUDE_NOTIFY_OS" ] && NOTIFY_OS="$CLAUDE_NOTIFY_OS"
+
+_MSG="${1:-Claude Code task complete}"
+_INDICATOR=/tmp/tmux-notify-flag
+_SILENT=/tmp/tmux-notify-silent
+
+# ── silence check ─────────────────────────────────────────────────────────────
+[ -f "$_SILENT" ] && exit 0
+
+# ── tmux notification ─────────────────────────────────────────────────────────
+if command -v tmux > /dev/null 2>&1; then
+    if [ "$NOTIFY_SESSION" = "all" ]; then
+        tmux list-sessions -F "#{session_name}" 2>/dev/null | while IFS= read -r _s; do
+            tmux display-message -t "$_s" "$_MSG"
+        done
+    elif [ -n "$NOTIFY_SESSION" ] && [ -n "$NOTIFY_WINDOW" ]; then
+        tmux display-message -t "${NOTIFY_SESSION}:${NOTIFY_WINDOW}" "$_MSG" 2>/dev/null
+    elif [ -n "$NOTIFY_SESSION" ]; then
+        tmux display-message -t "$NOTIFY_SESSION" "$_MSG" 2>/dev/null
+    else
+        tmux display-message "$_MSG" 2>/dev/null || true
+    fi
+
+    # set status bar indicator, self-clearing after N seconds
+    touch "$_INDICATOR"
+    (sleep "$NOTIFY_INDICATOR_DURATION" && rm -f "$_INDICATOR") &
+fi
+
+# ── OS notification ───────────────────────────────────────────────────────────
+if [ "$NOTIFY_OS" = "1" ]; then
+    _OS="$(uname)"
+    _SAFE_MSG="$(printf '%s' "$_MSG" | sed 's/"/\\"/g')"
+    case "$_OS" in
+        Darwin)
+            if command -v osascript > /dev/null 2>&1; then
+                if [ -n "$NOTIFY_SOUND" ]; then
+                    osascript -e "display notification \"$_SAFE_MSG\" with title \"Claude Code\" sound name \"$NOTIFY_SOUND\""
+                else
+                    osascript -e "display notification \"$_SAFE_MSG\" with title \"Claude Code\""
+                fi
+            fi
+            ;;
+        Linux)
+            if command -v notify-send > /dev/null 2>&1; then
+                notify-send -u "$NOTIFY_URGENCY" "Claude Code" "$_SAFE_MSG"
+            fi
+            ;;
+    esac
+fi

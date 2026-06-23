@@ -2,7 +2,8 @@
 
 # i do this to every directory i am in
 # 1 is neovim
-# 2 is where i run commands
+# 2 is where i run claude
+# 3 is where i run commands
 
 if [[ "$(pwd)" == $HOME/personal ]]; then
     clear
