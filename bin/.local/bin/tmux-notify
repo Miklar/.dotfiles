@@ -36,9 +36,20 @@ _claude_window_visible() {
         *) return 1 ;;
     esac
     [ -z "$TMUX_PANE" ] && return 1
-    [ "$(tmux display-message -p -t "$TMUX_PANE" '#{window_active}' 2>/dev/null)" = "1" ]
+    _cs=$(tmux display-message -p -t "$TMUX_PANE" '#{session_name}' 2>/dev/null)
+    [ -z "$_cs" ] && return 1
+    # most recently active client's session
+    _as=$(tmux list-clients -F '#{client_activity} #{client_session}' 2>/dev/null \
+        | sort -rn | head -1 | awk '{print $2}')
+    [ "$_cs" = "$_as" ]
 }
 _claude_window_visible && exit 0
+
+# ── save source location for Prefix+G navigation ─────────────────────────────
+if [ -n "$TMUX_PANE" ]; then
+    tmux display-message -p -t "$TMUX_PANE" '#{session_name}:#{window_index}' \
+        > /tmp/tmux-notify-source 2>/dev/null
+fi
 
 # ── tmux notification ─────────────────────────────────────────────────────────
 if command -v tmux > /dev/null 2>&1; then
