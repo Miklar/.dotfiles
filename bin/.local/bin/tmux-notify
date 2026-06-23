@@ -25,6 +25,21 @@ _SILENT=/tmp/tmux-notify-silent
 # ── silence check ─────────────────────────────────────────────────────────────
 [ -f "$_SILENT" ] && exit 0
 
+# ── visibility check — skip if Claude's window is already in focus ────────────
+# macOS only: terminal app frontmost + Claude's tmux window is active window
+_claude_window_visible() {
+    [ "$(uname)" = "Darwin" ] || return 1
+    command -v osascript > /dev/null 2>&1 || return 1
+    _front=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null)
+    case "$_front" in
+        Alacritty|alacritty|Ghostty|ghostty|iTerm2|Terminal|kitty|WezTerm|wezterm|Hyper) ;;
+        *) return 1 ;;
+    esac
+    [ -z "$TMUX_PANE" ] && return 1
+    [ "$(tmux display-message -p -t "$TMUX_PANE" '#{window_active}' 2>/dev/null)" = "1" ]
+}
+_claude_window_visible && exit 0
+
 # ── tmux notification ─────────────────────────────────────────────────────────
 if command -v tmux > /dev/null 2>&1; then
     if [ "$NOTIFY_SESSION" = "all" ]; then
