@@ -5,6 +5,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 require("config.lazy")
+require("config.vault").setup()
 
 -- Indent with 4 spaces
 vim.o.sw = 4
