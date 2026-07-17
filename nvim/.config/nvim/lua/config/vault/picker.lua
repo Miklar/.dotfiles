@@ -1,29 +1,31 @@
 local M = {}
 
-local config = require("vault.config")
+local config = require("config.vault.config")
 local fzf = require("fzf-lua")
 
-local function grep_picker(title, pattern)
+local function grep_picker(title, pattern, folder)
   fzf.files({
     prompt = title .. "> ",
     cwd = vim.fn.expand(config.vault_path),
-
-    cmd = string.format("rg -l '%s' .", pattern),
-
+    cmd = string.format("rg -l '%s' %s", pattern, folder or "."),
     previewer = "builtin",
   })
 end
 
 function M.projects()
-  grep_picker("Projects", "Status:: Active")
+  fzf.files({
+    prompt = "Projects> ",
+    cwd = vim.fn.expand(config.vault_path) .. "/Projects",
+    previewer = "builtin",
+  })
 end
 
 function M.incubator()
-  grep_picker("Incubator", "Type:: Incubator")
+  grep_picker("Incubator", "Category::", "Incubator")
 end
 
 function M.daily()
-  grep_picker("Daily", "Type:: Daily")
+  grep_picker("Daily", "Updated::", "Daily")
 end
 
 return M

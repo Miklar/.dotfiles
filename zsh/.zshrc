@@ -3,7 +3,6 @@ export PATH=$HOME/bin:/usr/local/bin:/Users/miklar/.local/bin:$PATH
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-export PATH=$HOME/development/flutter/bin:$PATH
 export PATH=$HOME/.gem/bin:$PATH
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export PATH="/usr/local/netcoredbg:$PATH"
@@ -32,13 +31,12 @@ HYPHEN_INSENSITIVE="true"
 # see 'man strftime' for details.
 HIST_STAMPS="yyyy-mm-dd"
 
-NVM_HOMEBREW=$(brew --prefix nvm)
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git nvm)
+plugins=(git docker)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -79,30 +77,16 @@ alias va="v $HOME/.oh-my-zsh/custom/alias.zsh"
 alias vv="v $HOME/.config/nvim/"
 alias vc=vv
 
-# alias t=todo.sh
-
-# source ~/.zshr
 alias sc="exec zsh"
+alias ts=~/.local/bin/tmux-sessionizer
 
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/.ripgreprc
-
-export CGO_CFLAGS="-I$(brew --prefix portmidi)/include"
-export CGO_LDFLAGS="-L$(brew --prefix portmidi)/lib -lportmidi"
 
 # Use Ctrl-X Ctrl-E to edit current command line in editor
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 
-UTILS='/Users/miklar/work/earlybird/utils'
-alias forw="$UTILS/env-port-forward.sh"
-
-bnauth() {
-  export BIRDNEST_API_TOKEN=$($UTILS/birdnest/birdnest-auth.sh $1 $2)
-}
-alias bn="$UTILS/birdnest/birdnest.sh"
-
-alias ts=~/.local/bin/tmux-sessionizer
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -111,17 +95,6 @@ if [ -f '/Users/miklar/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/miklar/g
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/miklar/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/miklar/google-cloud-sdk/completion.zsh.inc'; fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-# bun completions
-[ -s "/Users/miklar/.bun/_bun" ] && source "/Users/miklar/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
 
 # yazi
 function y() {
@@ -132,14 +105,9 @@ function y() {
 	fi
 	rm -f -- "$tmp"
 }
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/miklar/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
 
 eval "$(starship init zsh)"
-
+eval "$(mise activate zsh)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
