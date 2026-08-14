@@ -5,11 +5,7 @@
 # 2 is where i run claude
 # 3 is where i run commands
 
-if [[ "$(pwd)" == $HOME/personal ]]; then
-    clear
-    return
-fi
-tmux new-window -dn claude "claude"
+tmux new-window -dn pi "pi"
 tmux new-window -dn scratch
 v .
 clear

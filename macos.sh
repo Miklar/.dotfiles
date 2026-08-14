@@ -68,9 +68,9 @@ defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 # Screenshots
 ###############################################################################
 
-mkdir -p ~/Dessktop/Screenshots
+mkdir -p ~/Desktop/Screenshots
 
-defaults write com.apple.screencapture location -string "$HOME/Dessktop/Screenshots"
+defaults write com.apple.screencapture location -string "$HOME/Desktop/Screenshots"
 defaults write com.apple.screencapture type -string "png"
 
 ###############################################################################

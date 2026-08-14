@@ -10,7 +10,6 @@ echo "Installing development environment..."
 brew install \
   mise \
   direnv \
-  # just \
   jq \
   yq \
   fx \

@@ -88,7 +88,7 @@ zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+eval "$(fzf --zsh)"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/miklar/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/miklar/google-cloud-sdk/path.zsh.inc'; fi
