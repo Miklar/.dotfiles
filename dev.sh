@@ -90,6 +90,17 @@ brew install azure-cli
 brew install --cask google-cloud-sdk
 
 ###############################################################################
+# .NET global tools
+###############################################################################
+
+# Roslyn language server used by nvim (seblyng/roslyn.nvim).
+# The Azure DevOps feed matches the version shipped in the VS Code C# extension.
+dotnet tool install -g roslyn-language-server --prerelease \
+  --source https://pkgs.dev.azure.com/azure-public/vside/_packaging/vs-impl/nuget/v3/index.json
+
+dotnet tool install -g easydotnet
+
+###############################################################################
 # Setup directories
 ###############################################################################
 
