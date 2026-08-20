@@ -80,6 +80,15 @@ alias vc=vv
 alias sc="exec zsh"
 alias ts=~/.local/bin/tmux-sessionizer
 
+# Ensure dotfiles-managed scripts (stowed from bin/.local/bin) are on PATH
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+# Azure / az-cli
+alias pim="pim-activate.sh Contributor PT8H"
+
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/.ripgreprc
 
 # Use Ctrl-X Ctrl-E to edit current command line in editor
