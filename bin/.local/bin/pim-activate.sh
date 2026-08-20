@@ -121,10 +121,26 @@ activate_for_subscription() {
     }')
 
   echo "Activating '${ROLE_NAME}' for ${DURATION} on ${sub}..."
-  az rest --method put \
+
+  # NOTE: don't rely on `set -e` here — this call sits inside
+  # `activate_for_subscription "${sub}" || STATUS=1` in the caller, and per
+  # bash's errexit rules that disables -e for the whole function body during
+  # this invocation. Check the exit status explicitly instead.
+  local put_status=0 put_response
+  put_response=$(az rest --method put \
     --url "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${request_name}?api-version=2020-10-01" \
     --body "${body}" \
-    --headers "Content-Type=application/json" >/dev/null
+    --headers "Content-Type=application/json" 2>&1) || put_status=$?
+
+  if [[ ${put_status} -ne 0 ]]; then
+    if [[ "${put_response}" == *RoleAssignmentExists* ]]; then
+      echo "Role '${ROLE_NAME}' is already active on ${sub}. Nothing to do."
+      return 0
+    fi
+    echo "Failed to activate '${ROLE_NAME}' on ${sub}:" >&2
+    echo "${put_response}" >&2
+    return 1
+  fi
 
   echo "Activation request submitted for ${sub}."
 }
