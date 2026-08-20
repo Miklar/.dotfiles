@@ -8,3 +8,5 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 [[ -f "$HOME/.zprofile.local" ]] && source "$HOME/.zprofile.local"
+
+export PATH="/Users/miklar/bin:$PATH"
