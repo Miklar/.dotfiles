@@ -87,7 +87,13 @@ case ":$PATH:" in
 esac
 
 # Azure / az-cli
-alias pim="pim-activate.sh Contributor PT8H"
+# Activates PIM roles for a subscription group defined in
+# ~/.config/pim/groups.conf (default group: test).
+#   pim        -> test group
+#   pim prod   -> prod group
+pim() {
+  pim-activate.sh "${1:-test}" "${2:-Epiroc - LZ - Contributor}" "${3:-PT8H}"
+}
 
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep/.ripgreprc
 

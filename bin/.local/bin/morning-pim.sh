@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# morning-pim.sh — ensure Azure CLI session is valid, then self-activate PIM role.
+# morning-pim.sh — ensure Azure CLI session is valid, then self-activate PIM role(s).
+#
+# Usage:
+#   morning-pim.sh [group] [role-name] [duration]
 set -euo pipefail
 
-ROLE_NAME="${1:-Contributor}"
-DURATION="${2:-PT8H}"
+GROUP="${1:-test}"
+ROLE_NAME="${2:-Epiroc - LZ - Contributor}"
+DURATION="${3:-PT8H}"
 
 # 1. Check if the cached session/token is still valid (no prompt if so).
 if ! az account get-access-token --output none 2>/dev/null; then
@@ -13,5 +17,5 @@ if ! az account get-access-token --output none 2>/dev/null; then
   az login --use-device-code
 fi
 
-# 2. Activate PIM role using the persistent session.
-"$(dirname "$0")/pim-activate.sh" "${ROLE_NAME}" "${DURATION}"
+# 2. Activate PIM role(s) for the group using the persistent session.
+"$(dirname "$0")/pim-activate.sh" "${GROUP}" "${ROLE_NAME}" "${DURATION}"
