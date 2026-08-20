@@ -76,9 +76,11 @@ activate_for_subscription() {
   fi
 
   # 2. Confirm you actually have an eligible assignment for this role.
+  #    Use asTarget() rather than a principalId filter: the scoped endpoint's
+  #    principalId filter unreliably omits eligible assignments for some subs.
   eligible=$(az rest --method get \
-    --url "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&\$filter=principalId eq '${PRINCIPAL_ID}'" \
-    --query "value[?roleDefinitionId=='${role_definition_id}'] | [0]" -o json)
+    --url "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&\$filter=asTarget()" \
+    --query "value[?properties.roleDefinitionId=='${role_definition_id}'] | [0]" -o json)
 
   if [[ -z "${eligible}" || "${eligible}" == "null" ]]; then
     echo "No eligible assignment found for role '${ROLE_NAME}' on ${sub}." >&2
@@ -87,8 +89,8 @@ activate_for_subscription() {
 
   # 3. Check if already active — skip if so.
   active=$(az rest --method get \
-    --url "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&\$filter=principalId eq '${PRINCIPAL_ID}'" \
-    --query "value[?roleDefinitionId=='${role_definition_id}'] | [0]" -o json)
+    --url "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&\$filter=asTarget()" \
+    --query "value[?properties.roleDefinitionId=='${role_definition_id}' && properties.scope=='${scope}'] | [0]" -o json)
 
   if [[ -n "${active}" && "${active}" != "null" ]]; then
     echo "Role '${ROLE_NAME}' is already active on ${sub}. Nothing to do."
