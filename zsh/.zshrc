@@ -78,9 +78,11 @@ alias vv="v $HOME/.config/nvim/"
 alias vc=vv
 
 alias sc="exec zsh"
-alias ts=~/.local/bin/tmux-sessionizer
+alias ts=~/bin/tmux-sessionizer
 
-# Ensure dotfiles-managed scripts (stowed from bin/.local/bin) are on PATH
+# ~/.local/bin holds tool-installed binaries (uv, pipx, uv tool installs, etc.)
+# Dotfiles-managed scripts live in ~/bin (stowed from dotfiles/scripts/bin),
+# which is already first on PATH above.
 case ":$PATH:" in
   *":$HOME/.local/bin:"*) ;;
   *) export PATH="$HOME/.local/bin:$PATH" ;;
