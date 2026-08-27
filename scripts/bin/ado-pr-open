@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Open an Azure DevOps pull request in the browser.
+# Usage: ado-pr-open <pr-id>
+
+set -euo pipefail
+
+if [[ $# -ne 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  echo "Usage: ado-pr-open <pr-id>" >&2
+  exit 2
+fi
+
+az repos pr show --id "$1" --open --output table

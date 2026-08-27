@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# Create a disposable git worktree for an Azure DevOps pull request.
+# Usage: ado-pr-worktree <pr-id> [path] [--submodules]
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: ado-pr-worktree <pr-id> [path] [--submodules]
+
+Creates a sibling detached worktree for the PR source branch:
+  ../<repo-name>-pr-<pr-id>
+
+Examples:
+  ado-pr-worktree 210778
+  ado-pr-worktree 210778 ../registrydatamanager-webapp-pr-210778 --submodules
+
+Options:
+  --submodules   Run git submodule update --init --recursive in the new worktree.
+
+Requires:
+  - Azure DevOps CLI: az extension add --name azure-devops
+  - az devops defaults configured for organization/project, or a repo remote Azure CLI can detect.
+EOF
+}
+
+if [[ $# -lt 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+pr="$1"
+shift
+
+init_submodules=0
+path=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --submodules)
+      init_submodules=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      if [[ -n "$path" ]]; then
+        echo "unexpected extra argument: $1" >&2
+        usage >&2
+        exit 2
+      fi
+      path="$1"
+      ;;
+  esac
+  shift
+done
+
+if ! command -v az >/dev/null 2>&1; then
+  echo "az CLI not found" >&2
+  exit 1
+fi
+
+repo_root="$(git rev-parse --show-toplevel)"
+remote_url="$(git -C "$repo_root" remote get-url origin 2>/dev/null || true)"
+repo_name="$(printf '%s\n' "$remote_url" | sed -E 's#.*/_git/##; s#.*/##; s#\.git$##')"
+if [[ -z "$repo_name" ]]; then
+  repo_name="$(basename "$repo_root")"
+fi
+repo_parent="$(dirname "$repo_root")"
+
+source_ref="$(az repos pr show --id "$pr" --query sourceRefName -o tsv)"
+target_ref="$(az repos pr show --id "$pr" --query targetRefName -o tsv)"
+title="$(az repos pr show --id "$pr" --query title -o tsv)"
+
+source_branch="${source_ref#refs/heads/}"
+target_branch="${target_ref#refs/heads/}"
+
+if [[ -z "$path" ]]; then
+  path="$repo_parent/$repo_name-pr-$pr"
+fi
+
+if [[ -e "$path" ]]; then
+  echo "path already exists: $path" >&2
+  exit 1
+fi
+
+echo "PR #$pr: $title"
+echo "source: $source_branch"
+echo "target: $target_branch"
+echo "path:   $path"
+echo
+
+git -C "$repo_root" fetch origin \
+  "+refs/heads/$source_branch:refs/remotes/origin/$source_branch" \
+  "+refs/heads/$target_branch:refs/remotes/origin/$target_branch" \
+  --quiet
+git -C "$repo_root" worktree add "$path" --detach "origin/$source_branch"
+
+if [[ "$init_submodules" -eq 1 && -f "$path/.gitmodules" ]]; then
+  git -C "$path" submodule update --init --recursive
+elif [[ -f "$path/.gitmodules" ]]; then
+  echo
+  echo "Submodules detected. If you need to build/run this worktree:"
+  echo "  git -C '$path' submodule update --init --recursive"
+fi
+
+echo
+echo "Review commands:"
+echo "  cd '$path'"
+echo "  git diff --stat origin/$target_branch...HEAD"
+echo "  nvim ."

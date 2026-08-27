@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# List active Azure DevOps pull requests for the current repository.
+# Usage: ado-pr-list [az repos pr list args...]
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+remote_url="$(git -C "$repo_root" remote get-url origin 2>/dev/null || true)"
+repo_name="$(printf '%s\n' "$remote_url" | sed -E 's#.*/_git/##; s#.*/##; s#\.git$##')"
+if [[ -z "$repo_name" ]]; then
+  repo_name="$(basename "$repo_root")"
+fi
+
+az repos pr list \
+  --repository "$repo_name" \
+  --status active \
+  --output table \
+  "$@"

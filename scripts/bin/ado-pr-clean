@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Remove a disposable Azure DevOps PR worktree.
+# Usage: ado-pr-clean <pr-id> [path] [--force]
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: ado-pr-clean <pr-id> [path] [--force]
+
+Removes the default PR worktree path:
+  ../<repo-name>-pr-<pr-id>
+
+Examples:
+  ado-pr-clean 210778
+  ado-pr-clean 210778 --force
+  ado-pr-clean 210778 ../registrydatamanager-webapp-pr-210778 --force
+
+Options:
+  --force   Remove even if dirty or containing submodules. Uses git worktree remove --force --force.
+EOF
+}
+
+if [[ $# -lt 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+pr="$1"
+shift
+
+force=0
+path=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --force|-f)
+      force=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      if [[ -n "$path" ]]; then
+        echo "unexpected extra argument: $1" >&2
+        usage >&2
+        exit 2
+      fi
+      path="$1"
+      ;;
+  esac
+  shift
+done
+
+repo_root="$(git rev-parse --show-toplevel)"
+remote_url="$(git -C "$repo_root" remote get-url origin 2>/dev/null || true)"
+repo_name="$(printf '%s\n' "$remote_url" | sed -E 's#.*/_git/##; s#.*/##; s#\.git$##')"
+if [[ -z "$repo_name" ]]; then
+  repo_name="$(basename "$repo_root")"
+fi
+repo_parent="$(dirname "$repo_root")"
+
+if [[ -z "$path" ]]; then
+  path="$repo_parent/$repo_name-pr-$pr"
+fi
+
+if [[ ! -e "$path" ]]; then
+  echo "worktree path does not exist: $path" >&2
+  exit 1
+fi
+
+if [[ "$force" -eq 0 ]]; then
+  dirty="$(git -C "$path" status --short)"
+  if [[ -n "$dirty" ]]; then
+    echo "worktree has local changes; not removing without --force:" >&2
+    echo "$dirty" >&2
+    exit 1
+  fi
+  git -C "$repo_root" worktree remove "$path"
+else
+  git -C "$repo_root" worktree remove --force --force "$path"
+fi
+
+git -C "$repo_root" worktree prune
+
+echo "Removed $path"
