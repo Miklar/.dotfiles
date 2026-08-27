@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-STOW_FOLDERS="alacritty,ghostty,scripts,git,nvim,nvim-2025,tmux,zsh,spaceship,aerospace,yazi,starship,ripgrep,fd,ignore,claude,pim"
+STOW_FOLDERS="alacritty,ghostty,scripts,git,nvim,nvim-2025,tmux,zsh,spaceship,aerospace,yazi,starship,ripgrep,fd,ignore,claude,pim,pi"
 
 DOT_FILES=$HOME/.dotfiles
 

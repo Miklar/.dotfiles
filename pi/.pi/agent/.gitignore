@@ -1,0 +1,9 @@
+# Global Pi private/runtime state. Keep these out of dotfiles.
+auth.json
+sessions/
+trust.json
+models-store.json
+npm/
+git/
+pi-debug.log
+*.log

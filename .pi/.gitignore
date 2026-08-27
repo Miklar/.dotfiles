@@ -1,0 +1,5 @@
+# Project-local Pi runtime state
+sessions/
+npm/
+git/
+*.log

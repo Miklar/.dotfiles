@@ -1,0 +1,7 @@
+{
+  "enableSkillCommands": true,
+  "compaction": {
+    "enabled": true,
+    "keepRecentTokens": 20000
+  }
+}
