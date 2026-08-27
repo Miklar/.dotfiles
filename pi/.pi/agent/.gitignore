@@ -3,6 +3,7 @@ auth.json
 sessions/
 trust.json
 models-store.json
+work-log/
 npm/
 git/
 pi-debug.log
