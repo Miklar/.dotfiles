@@ -1,4 +1,6 @@
 {
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.5",
   "enableSkillCommands": true,
   "compaction": {
     "enabled": true,
