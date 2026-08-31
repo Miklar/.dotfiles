@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# tmux-pi-jump — jump to a tmux window where pi.dev is waiting for input.
+# Meant to run inside a tmux popup (see Prefix+P in tmux-pi-waiting.conf).
+set -euo pipefail
+
+matches=$(tmux list-windows -a -f '#{==:#{@pi_waiting},on}' \
+    -F '#{session_name}:#{window_index}	#{session_name}	#{window_index}	#{window_name}	#{pane_current_path}' \
+    2>/dev/null || true)
+
+if [ -z "$matches" ]; then
+    tmux display-message "No pi windows waiting for input"
+    exit 0
+fi
+
+count=$(printf '%s\n' "$matches" | wc -l | tr -d ' ')
+
+if [ "$count" -eq 1 ]; then
+    target=$(printf '%s\n' "$matches" | cut -f1)
+else
+    target=$(printf '%s\n' "$matches" \
+        | fzf --delimiter='\t' --with-nth=2,3,4,5 --prompt='pi waiting> ' \
+        | cut -f1)
+fi
+
+[ -z "${target:-}" ] && exit 0
+
+tmux switch-client -t "$target"
+tmux select-window -t "$target"

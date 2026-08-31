@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# tmux-pi-status — print a status-bar indicator for pi.dev windows (in any
+# tmux session) that are waiting for input. Used by tmux-pi-waiting.conf.
+
+count=$(tmux list-windows -a -f '#{==:#{@pi_waiting},on}' 2>/dev/null | wc -l | tr -d ' ')
+
+if [ -n "$count" ] && [ "$count" -gt 0 ] 2>/dev/null; then
+    printf '🔔%s ' "$count"
+fi
