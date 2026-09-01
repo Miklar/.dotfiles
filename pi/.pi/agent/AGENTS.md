@@ -11,3 +11,10 @@
 - When modifying dotfiles, keep GNU Stow layout in mind and avoid committing machine-local state.
 - Prefer making reversible, targeted edits over broad rewrites.
 - After meaningful work, keep `~/.pi/agent/work-log/YYYY-MM-DD.md` updated using the `daily-standup` skill so the user can draft Teams daily updates later. Do not log secrets, credentials, or private runtime state.
+
+## Response style
+
+- Default to terse answers: direct result first, then only essential details.
+- For code changes, final response should usually be: changed files, validation, follow-up. Avoid long explanations unless asked.
+- Do not restate command output at length. Summarize failures and next steps.
+- Prefer bullets over paragraphs. Keep routine replies under about 120 words.

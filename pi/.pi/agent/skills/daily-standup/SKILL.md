@@ -95,6 +95,14 @@ When asked for a daily update:
 4. Draft a paste-ready Teams message in first person.
 5. Keep it brief: 3 sections max.
 
+Tone of voice:
+
+- Write like a normal team daily, not a status report.
+- Prefer natural first-person phrasing such as `Finished up...`, `Started looking into...`, `Got it down from X to Y...`.
+- Lead with the actual outcome, then mention the area if needed.
+- Keep technical detail high-level unless the log makes a precise detail important.
+- Avoid over-polished corporate wording, inflated impact, or invented certainty.
+
 Default format:
 
 ```text
@@ -120,6 +128,7 @@ Yesterday I ..., today I'm ..., no blockers.
 
 - When tracking work as part of another task, mention at most one short sentence: `Updated the work log.`
 - When drafting Teams text, output only the draft unless the user asks for explanation.
+- Match the user's preferred casual standup tone when provided; concise sentence bullets are better than formal project-report bullets.
 - Be honest about uncertainty: say `I don't have a log entry for...` rather than inventing.
 
 ## Validation
