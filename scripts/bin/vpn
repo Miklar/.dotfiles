@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -e
+
+case "${1:-}" in
+  dedicated)
+    osascript <<'EOF'
+tell application "Tunnelblick"
+    disconnect "Denmark"
+    connect "Dedicated"
+end tell
+EOF
+    ;;
+
+  denmark|dk)
+    osascript <<'EOF'
+tell application "Tunnelblick"
+    disconnect "Dedicated"
+    connect "Denmark"
+end tell
+EOF
+    ;;
+
+  off)
+    osascript <<'EOF'
+tell application "Tunnelblick"
+    disconnect all
+end tell
+EOF
+    ;;
+
+status)
+  osascript <<'EOF'
+tell application "Tunnelblick"
+    set dedicatedState to state of first configuration where name = "Dedicated"
+    set denmarkState to state of first configuration where name = "Denmark"
+
+    if dedicatedState = "CONNECTED" then
+        return "Dedicated"
+    else if denmarkState = "CONNECTED" then
+        return "Denmark"
+    else
+        return "Off"
+    end if
+end tell
+EOF
+  ;;
+
+  *)
+    echo "Usage: vpn {dedicated|denmark|dk|off|status}"
+    exit 1
+    ;;
+esac
