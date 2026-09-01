@@ -29,16 +29,3 @@ format = '[$symbol$branch ]($style)'
 [gcloud]
 format = '[$symbol$active]($style)'
 style = 'bold blue'
-
-[custom.cluster]
-format = '[$output]($style)'
-description = "Displays current config for kubectl"
-command = "kubectl config current-context | sed 's/gke_bird-nest-\\([a-z]*\\)_.*/[\\1]/g'"
-when = true
-style = "bold green"
-
-[custom.dbask]
-description = "Displays current config for dbask"
-command = "dbask -current_port"
-when = true
-style = "bold blue"

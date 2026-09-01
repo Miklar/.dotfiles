@@ -132,3 +132,8 @@ if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)
 export PATH="$HOME/.aspire/bin:$PATH"
 
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/miklar/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
