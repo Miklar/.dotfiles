@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+# List my active Azure DevOps pull requests or assigned work items.
+# Defaults match this dotfiles repo: epiroc-it / Harmony.
+
+set -euo pipefail
+
+DEFAULT_ORG="https://dev.azure.com/epiroc-it"
+DEFAULT_PROJECT="Harmony"
+
+usage() {
+  cat <<'EOF'
+Usage: ado-mine <prs|reviews|work-items|all> [options]
+
+List active Azure DevOps items for the signed-in user.
+
+Commands:
+  prs, pr              Active pull requests created by me
+  reviews, review      Active pull requests where I am a reviewer
+  work-items, wi       Active work items assigned to me
+  all                  Active PRs created by me, then active work items
+
+Options:
+  --org URL            Azure DevOps organization URL
+                       Default: $ADO_ORG or https://dev.azure.com/epiroc-it
+  -p, --project NAME   Azure DevOps project
+                       Default: $ADO_PROJECT or Harmony
+  -u, --user USER      User/email for PR filtering
+                       Default: $ADO_USER or `az account show --query user.name`
+  -r, --repo NAME      Limit PR results to one repository
+  --top N              Max results (default: 50)
+  -o, --output FORMAT  Azure CLI output format (default: table)
+  -h, --help           Show this help
+
+Examples:
+  ado-mine prs
+  ado-mine reviews --repo registrydatamanager-webapp
+  ado-mine wi
+  ado-mine all --top 20
+
+Notes:
+  Work items use WIQL [System.AssignedTo] = @Me and exclude Closed/Done/Removed.
+  PR filters require a resolvable user; pass --user if Azure CLI cannot infer yours.
+EOF
+}
+
+require_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "Missing required command: $1" >&2
+    exit 127
+  fi
+}
+
+detect_user() {
+  if [[ -n "${user:-}" ]]; then
+    printf '%s\n' "$user"
+    return 0
+  fi
+
+  local detected=""
+  detected="$(az account show --query user.name -o tsv 2>/dev/null || true)"
+  if [[ -n "$detected" ]]; then
+    printf '%s\n' "$detected"
+    return 0
+  fi
+
+  echo "Could not detect Azure user. Run 'az login' or pass --user <email>." >&2
+  exit 2
+}
+
+validate_top() {
+  if ! [[ "$top" =~ ^[0-9]+$ ]] || [[ "$top" -lt 1 ]]; then
+    echo "--top must be a positive integer" >&2
+    exit 2
+  fi
+}
+
+list_prs() {
+  local filter_flag="$1"
+  local me
+  me="$(detect_user)"
+
+  local query
+  query='[].{ID:pullRequestId,Repository:repository.name,Title:title,Source:sourceRefName,Target:targetRefName,Author:createdBy.displayName}'
+
+  local args=(
+    repos pr list
+    --organization "$org"
+    --project "$project"
+    --status active
+    --top "$top"
+    --query "$query"
+    --output "$output"
+  )
+
+  if [[ -n "$repo" ]]; then
+    args+=(--repository "$repo")
+  fi
+
+  case "$filter_flag" in
+    creator) args+=(--creator "$me") ;;
+    reviewer) args+=(--reviewer "$me") ;;
+    *) echo "Unknown PR filter: $filter_flag" >&2; exit 2 ;;
+  esac
+
+  az "${args[@]}"
+}
+
+list_work_items() {
+  local wiql
+  wiql="SELECT
+    [System.Id],
+    [System.WorkItemType],
+    [System.Title],
+    [System.State],
+    [System.AssignedTo],
+    [System.ChangedDate]
+FROM WorkItems
+WHERE
+    [System.TeamProject] = @project
+    AND [System.AssignedTo] = @Me
+    AND [System.State] NOT IN ('Closed', 'Done', 'Removed')
+ORDER BY [System.ChangedDate] DESC"
+
+  local query
+  query="[:$top].{ID:id,Type:fields.\"System.WorkItemType\",State:fields.\"System.State\",Title:fields.\"System.Title\",Changed:fields.\"System.ChangedDate\"}"
+
+  az boards query \
+    --organization "$org" \
+    --project "$project" \
+    --wiql "$wiql" \
+    --query "$query" \
+    --output "$output"
+}
+
+cmd="${1:-all}"
+if [[ "$cmd" == "-h" || "$cmd" == "--help" ]]; then
+  usage
+  exit 0
+fi
+shift || true
+
+org="${ADO_ORG:-$DEFAULT_ORG}"
+project="${ADO_PROJECT:-$DEFAULT_PROJECT}"
+user="${ADO_USER:-}"
+repo=""
+top="50"
+output="table"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --org|--organization)
+      org="${2:-}"; shift 2 ;;
+    -p|--project)
+      project="${2:-}"; shift 2 ;;
+    -u|--user)
+      user="${2:-}"; shift 2 ;;
+    -r|--repo|--repository)
+      repo="${2:-}"; shift 2 ;;
+    --top)
+      top="${2:-}"; shift 2 ;;
+    -o|--output)
+      output="${2:-}"; shift 2 ;;
+    -h|--help)
+      usage; exit 0 ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage >&2
+      exit 2 ;;
+  esac
+done
+
+require_cmd az
+validate_top
+
+case "$cmd" in
+  prs|pr)
+    list_prs creator
+    ;;
+  reviews|review)
+    list_prs reviewer
+    ;;
+  work-items|workitems|wi)
+    list_work_items
+    ;;
+  all)
+    echo "Active PRs created by me:"
+    list_prs creator
+    echo
+    echo "Active work items assigned to me:"
+    list_work_items
+    ;;
+  *)
+    echo "Unknown command: $cmd" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

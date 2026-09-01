@@ -80,6 +80,7 @@ az repos pr create \
 ## Helper commands
 
 - `ado-pr-list` — list active PRs for the current repo.
+- `ado-mine <prs|reviews|wi|all>` — list your active PRs/reviews/work items across the Harmony project.
 - `ado-pr-open <pr-id>` — open PR in browser.
 - `ado-pr-worktree <pr-id> [path] [--submodules]` — create detached review worktree for PR source branch.
 - `ado-pr-clean <pr-id> [path] [--force]` — remove review worktree.
