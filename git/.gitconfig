@@ -32,8 +32,9 @@
 #  pager = diff-so-fancy | less --tabs=4 -RFX
   pager = delta
 
-  autocrlf = input
-  safecrlf = false
+	autocrlf = false
+	safecrlf = warn
+	eol = lf
 
 [help]
 	; autocorrect = 20
@@ -41,6 +42,7 @@
 	ff = only
 [push]
     autosetupremote = true
+	recurseSubmodules = no
 
 [interactive]
   diffFilter = delta --color-only
