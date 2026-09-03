@@ -1,6 +1,11 @@
 ---
 name: daily-standup
-description: Maintains a private rolling work log and drafts concise Microsoft Teams daily standup updates. USE FOR: tracking what the user worked on, capturing completed work/decisions/blockers/next steps, or writing "what should I say in daily?" messages. DO NOT USE FOR: committing work logs, storing secrets, or formal project status reports that need external source-of-truth verification.
+description: >-
+  Maintains a private rolling work log and drafts concise Microsoft Teams daily
+  standup updates. USE FOR: tracking what the user worked on, capturing completed
+  work/decisions/blockers/next steps, or writing "what should I say in daily?"
+  messages. DO NOT USE FOR: committing work logs, storing secrets, or formal
+  project status reports that need external source-of-truth verification.
 ---
 
 # Daily Standup
@@ -47,6 +52,12 @@ Create or update today's file with this structure:
 ## Decisions / Notes
 - <important decision, discovery, command, PR, work item, or follow-up>
 
+## Standup Inputs
+- <work items the user explicitly asked to include in a daily/standup summary>
+
+## Standup
+<latest paste-ready daily summary for the day it will be used>
+
 ## Tomorrow / Next
 - <likely next step>
 ```
@@ -76,6 +87,7 @@ Read `~/.pi/agent/work-log/YYYY-MM-DD.md` if it exists. If not, create the direc
 - Move stale `In Progress` items to `Done` when the work is now complete.
 - Add validation outcome when relevant, e.g. `validated with dotnet test` or `syntax checked with luac -p`.
 - Keep bullets short enough to paste into a standup summary later.
+- If the user explicitly asks to put down/include a work item for daily/standup, record it under `## Standup Inputs` and preserve the user's intended meaning/tone.
 
 ### Step 4: Keep it private and safe
 
@@ -92,8 +104,11 @@ When asked for a daily update:
 1. Read today's work log.
 2. If useful, also read yesterday's log for carry-over context.
 3. Optionally inspect local `git status` only to catch unlogged current work.
-4. Draft a paste-ready Teams message in first person.
-5. Keep it brief: 3 sections max.
+4. Include all work items the user explicitly asked to put down/include in daily/standup; do not drop them during summarization.
+5. Draft a paste-ready Teams message in first person.
+6. Keep it brief: 3 sections max.
+7. Determine the work-log date the summary will be used for (default: today's local date; if the user says tomorrow or another date, use that date).
+8. Write the exact generated summary into `~/.pi/agent/work-log/YYYY-MM-DD.md` under `## Standup`, replacing the previous generated standup for that date rather than duplicating it.
 
 Tone of voice:
 
@@ -127,8 +142,9 @@ Yesterday I ..., today I'm ..., no blockers.
 ## Output Rules
 
 - When tracking work as part of another task, mention at most one short sentence: `Updated the work log.`
-- When drafting Teams text, output only the draft unless the user asks for explanation.
+- When drafting Teams text, output only the draft unless the user asks for explanation; still update the target day's `## Standup` section first.
 - Match the user's preferred casual standup tone when provided; concise sentence bullets are better than formal project-report bullets.
+- User-explicit standup items are mandatory in the summary unless they would expose secrets or sensitive details; if they must be sanitized, keep the safe gist.
 - Be honest about uncertainty: say `I don't have a log entry for...` rather than inventing.
 
 ## Validation
