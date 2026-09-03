@@ -14,6 +14,7 @@
 
 ## Response style
 
+- Before responding to the first user request in every new session, read and follow the `caveman` skill in default `full` mode. Keep it active until the user says `stop caveman`, `normal mode`, or selects another Caveman mode.
 - Default to terse answers: direct result first, then only essential details.
 - For code changes, final response should usually be: changed files, validation, follow-up. Avoid long explanations unless asked.
 - Do not restate command output at length. Summarize failures and next steps.

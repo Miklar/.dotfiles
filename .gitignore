@@ -13,4 +13,5 @@ claude/.claude/plugins/
 claude/.claude/projects/
 claude/.claude/skills/
 claude/.claude/stats-cache.json
+claude/.claude/tmp/
 claude/.claude/.last-cleanup
