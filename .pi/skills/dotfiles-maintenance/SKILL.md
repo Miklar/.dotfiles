@@ -1,6 +1,11 @@
 ---
 name: dotfiles-maintenance
-description: Maintains this dotfiles repo's GNU Stow layout, Pi configuration, shell tools, and portability conventions. USE FOR: changing dotfiles, adding a new stow package, editing install scripts, managing repo-local/global Pi resources, or checking for secrets and machine-local state. DO NOT USE FOR: ordinary application code outside this dotfiles repository.
+description: >-
+  Maintains this dotfiles repo's GNU Stow layout, Pi configuration, shell tools,
+  and portability conventions. USE FOR: changing dotfiles, adding a new stow
+  package, editing install scripts, managing repo-local/global Pi resources, or
+  checking for secrets and machine-local state. DO NOT USE FOR: ordinary
+  application code outside this dotfiles repository.
 ---
 
 # Dotfiles Maintenance

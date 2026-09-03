@@ -1,6 +1,10 @@
 ---
 name: neovim-config
-description: Maintains this repo's Neovim Lua configuration. USE FOR: adding or configuring Neovim plugins, changing keymaps, LSP setup, diagnostics, treesitter, snippets, or lazy.nvim specs under nvim/.config/nvim. DO NOT USE FOR: editing unrelated dotfiles unless the task also touches Neovim.
+description: >-
+  Maintains this repo's Neovim Lua configuration. USE FOR: adding or configuring
+  Neovim plugins, changing keymaps, LSP setup, diagnostics, treesitter,
+  snippets, or lazy.nvim specs under nvim/.config/nvim. DO NOT USE FOR: editing
+  unrelated dotfiles unless the task also touches Neovim.
 ---
 
 # Neovim Config

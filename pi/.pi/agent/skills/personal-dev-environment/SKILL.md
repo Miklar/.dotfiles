@@ -1,6 +1,11 @@
 ---
 name: personal-dev-environment
-description: Maintains the user's personal development environment and global Pi setup. USE FOR: changing global Pi settings, stowed user-level agent skills/prompts, shell/editor/tooling preferences, or cross-repo dotfile behavior. DO NOT USE FOR: project-local application code unless the task is explicitly about developer environment configuration.
+description: >-
+  Maintains the user's personal development environment and global Pi setup. USE
+  FOR: changing global Pi settings, stowed user-level agent skills/prompts,
+  shell/editor/tooling preferences, or cross-repo dotfile behavior. DO NOT USE
+  FOR: project-local application code unless the task is explicitly about
+  developer environment configuration.
 ---
 
 # Personal Dev Environment
