@@ -10,7 +10,7 @@ return {
       local ensure = {
         "c", "c_sharp", "go", "lua", "terraform", "vim", "vimdoc", "vue",
         "query", "yaml", "toml", "markdown", "markdown_inline",
-        "sql", "json",
+        "sql", "json", "razor", "html", "css", "javascript", "regex",
       }
       require("nvim-treesitter").install(ensure)
 

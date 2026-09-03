@@ -28,7 +28,7 @@ return {
     },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "gopls", "ts_ls" },
+        ensure_installed = { "lua_ls", "gopls", "ts_ls", "html" },
       })
 
       vim.api.nvim_create_autocmd("LspAttach", {
