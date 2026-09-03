@@ -71,3 +71,6 @@
 	defaultBranch = main
 [submodule]
 	recurse = true
+
+[includeIf "gitdir:~/dev/work/epiroc/"]
+  path = ~/dev/work/epiroc/.gitconfig
