@@ -1,11 +1,11 @@
 // pi-waiting-indicator.ts
 //
-// Marks the tmux window a pi.dev session is running in with the
-// `@pi_waiting` user option whenever pi goes idle waiting for user input,
-// and clears it as soon as a new prompt is submitted or the session ends.
+// Marks the tmux window a pi.dev session is running in with user options:
+// - `@pi_active=on` while pi is processing a prompt
+// - `@pi_waiting=on` once pi settles and needs user input
 //
-// Paired with tmux/tmux-pi-waiting.conf, which surfaces `@pi_waiting`
-// windows in the status bar and provides Prefix+P to jump to one.
+// Paired with tmux/tmux-pi-waiting.conf, which surfaces waiting windows and
+// provides shortcuts for jumping to waiting or active pi sessions.
 //
 // No-op outside tmux.
 
@@ -38,31 +38,47 @@ export default function (pi: ExtensionAPI) {
     return target;
   }
 
-  async function setWaiting(waiting: boolean) {
+  async function setOption(name: "@pi_active" | "@pi_waiting", enabled: boolean) {
     const t = await resolveTarget();
     if (!t) return;
-    execFile(
-      "tmux",
-      ["set-window-option", "-t", t, "@pi_waiting", waiting ? "on" : "off"],
-      () => {}, // fire and forget; ignore errors (e.g. window closed)
-    );
+    try {
+      await execFileAsync("tmux", [
+        "set-window-option",
+        "-t",
+        t,
+        name,
+        enabled ? "on" : "off",
+      ]);
+    } catch {
+      // Window closed or tmux unavailable; stay disabled silently.
+    }
+  }
+
+  async function setState(state: "idle" | "active" | "waiting") {
+    // Turn off the previous state before enabling the next one so active and
+    // waiting are never simultaneously advertised.
+    await setOption("@pi_active", false);
+    await setOption("@pi_waiting", false);
+
+    if (state === "active") await setOption("@pi_active", true);
+    if (state === "waiting") await setOption("@pi_waiting", true);
   }
 
   pi.on("session_start", async () => {
-    await setWaiting(false);
+    await setState("idle");
   });
 
   // Fired right after the user submits a prompt (before the agent loop runs).
   pi.on("before_agent_start", async () => {
-    await setWaiting(false);
+    await setState("active");
   });
 
   // Fired when pi is truly idle and will not continue automatically.
   pi.on("agent_settled", async () => {
-    await setWaiting(true);
+    await setState("waiting");
   });
 
   pi.on("session_shutdown", async () => {
-    await setWaiting(false);
+    await setState("idle");
   });
 }

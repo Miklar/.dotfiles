@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# tmux-pi-active — list active pi.dev sessions and jump to the selected one.
+# Active means pi is processing a prompt, not idle or waiting for user input.
+# Meant to run inside a tmux popup (see Prefix+A in tmux-pi-waiting.conf).
+set -euo pipefail
+
+matches=$(tmux list-windows -a -f '#{==:#{@pi_active},on}' \
+    -F '#{session_name}:#{window_index}	#{session_name}	#{window_index}	#{window_name}	#{pane_current_path}' \
+    2>/dev/null || true)
+
+if [ -z "$matches" ]; then
+    tmux display-message "No active pi sessions"
+    exit 0
+fi
+
+if ! command -v fzf >/dev/null 2>&1; then
+    tmux display-message "fzf is required to list active pi sessions"
+    exit 1
+fi
+
+target=$(printf '%s\n' "$matches" \
+    | fzf --delimiter='\t' --with-nth=2,3,4,5 --prompt='pi active> ' \
+    | cut -f1)
+
+[ -z "${target:-}" ] && exit 0
+
+tmux switch-client -t "$target"
+tmux select-window -t "$target"
