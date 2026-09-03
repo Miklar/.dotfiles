@@ -15,3 +15,11 @@ claude/.claude/skills/
 claude/.claude/stats-cache.json
 claude/.claude/tmp/
 claude/.claude/.last-cleanup
+
+pi/.pi/agent/auth.json
+pi/.pi/agent/trust.json
+pi/.pi/agent/sessions/
+pi/.pi/agent/models-store.json
+pi/.pi/agent/npm/
+pi/.pi/agent/git/
+pi/.pi/agent/*.log

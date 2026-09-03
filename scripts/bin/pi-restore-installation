@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# pi-restore-installation — restore tracked user-level Pi packages from dotfiles.
+set -euo pipefail
+
+DOTFILES_DIR=${DOTFILES_DIR:-"$HOME/.dotfiles"}
+APPLY_STOW=false
+
+usage() {
+    cat <<'EOF'
+Usage: pi-restore-installation [--stow]
+
+Restores pinned Pi packages from ~/.dotfiles/pi/.pi/agent/settings.json.
+
+Options:
+  --stow  Run `stow -D pi && stow pi` before installing packages.
+EOF
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --stow)
+            APPLY_STOW=true
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            usage >&2
+            exit 2
+            ;;
+    esac
+    shift
+done
+
+cd "$DOTFILES_DIR"
+
+python3 -m json.tool pi/.pi/agent/settings.json >/dev/null
+
+if [ "$APPLY_STOW" = true ]; then
+    command -v stow >/dev/null 2>&1 || { echo "stow is required" >&2; exit 1; }
+    stow -D pi
+    stow pi
+fi
+
+command -v pi >/dev/null 2>&1 || { echo "pi is required" >&2; exit 1; }
+
+pi update --extensions
+pi list

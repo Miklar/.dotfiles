@@ -9,8 +9,14 @@
   "theme": "dark",
   "enableSkillCommands": true,
   "packages": [
-    "npm:pi-mcp-adapter",
-    "https://github.com/ayghri/i-have-adhd"
+    "npm:pi-mcp-adapter@2.32.1",
+    "https://github.com/ayghri/i-have-adhd@58494af57962b2d7a996b4d419474380a299af5e",
+    {
+      "source": "https://github.com/JuliusBrussee/caveman@3b74643f4d910f496babd4e634b1ba7168816f14",
+      "extensions": [],
+      "prompts": [],
+      "themes": []
+    }
   ],
   "enabledModels": [
     "github-copilot/gpt-5.5",
