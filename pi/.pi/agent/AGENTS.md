@@ -14,6 +14,7 @@
 
 ## Response style
 
+- Keep `i-have-adhd` mode enabled for every Pi session. It is configured as always-on in `~/.pi/agent/i-have-adhd.json`; if the extension does not inject it, manually follow its output rules: lead with the next action, number multi-step work, restate state, cap lists, and end with one concrete next step.
 - Before responding to the first user request in every new session, read and follow the `caveman` skill in default `full` mode. Keep it active until the user says `stop caveman`, `normal mode`, or selects another Caveman mode.
 - Default to terse answers: direct result first, then only essential details.
 - For code changes, final response should usually be: changed files, validation, follow-up. Avoid long explanations unless asked.
