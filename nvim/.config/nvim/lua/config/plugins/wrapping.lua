@@ -1,8 +1,14 @@
 return {
   {
     "andrewferrier/wrapping.nvim",
-    config = function()
-      require("wrapping").setup()
-    end
+    event = { "BufReadPre", "BufNewFile" },
+    keys = {
+      {
+        "<leader>uw",
+        "<Plug>(wrapping-toggle-wrap-mode)",
+        desc = "Toggle Wrap Mode",
+      },
+    },
+    opts = {},
   },
 }

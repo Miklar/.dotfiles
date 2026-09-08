@@ -5,7 +5,7 @@ return {
     "obsidian-nvim/obsidian.nvim",
     version = "*", -- recommended, use latest release instead of latest commit
     lazy = false,
-    enabled = vault ~= "",
+    enabled = false,
     event = {
       "BufReadPre " .. vault .. "/*.md",
       "BufNewFile " .. vault .. "/*.md",

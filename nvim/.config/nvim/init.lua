@@ -113,9 +113,6 @@ vim.keymap.set("n", "<leader>Y", '"+Y')
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
--- Toggle word wrap
-vim.keymap.set("n", "<leader>wr", "<cmd>set wrap!<CR>")
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
