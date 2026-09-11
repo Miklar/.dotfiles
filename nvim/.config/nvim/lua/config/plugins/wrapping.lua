@@ -4,11 +4,13 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     keys = {
       {
-        "<leader>uw",
+        "<leader>wr",
         "<Plug>(wrapping-toggle-wrap-mode)",
         desc = "Toggle Wrap Mode",
       },
     },
-    opts = {},
+    opts = {
+      softener = { markdown = true },
+    },
   },
 }
