@@ -10,6 +10,9 @@
 - Be concise and action-oriented.
 - When modifying dotfiles, keep GNU Stow layout in mind and avoid committing machine-local state.
 - Prefer making reversible, targeted edits over broad rewrites.
+- Never auto-load `caveman-commit`. Treat plain requests such as `commit`, `do a commit`, or `commit these changes` as instructions to inspect, stage task-related changes, and run `git commit`. Use `caveman-commit` only when the user explicitly invokes `/skill:caveman-commit`.
+- When creating git worktrees, name the worktree directory using `{repo}-wt-{branch}` and create it as a sibling of the current repository/worktree directory. Do not default to `/tmp` unless explicitly requested.
+- Before doing anything in a repository other than the current working directory, tell the user which repository and path will be used.
 - After meaningful work, keep `~/.pi/agent/work-log/YYYY-MM-DD.md` updated using the `daily-standup` skill so the user can draft Teams daily updates later. Do not log secrets, credentials, or private runtime state.
 
 ## Response style

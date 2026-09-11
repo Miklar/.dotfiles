@@ -1,19 +1,18 @@
 ---
 name: daily-standup
 description: >-
-  Maintains a private rolling work log and drafts concise Microsoft Teams daily
-  standup updates. USE FOR: tracking what the user worked on, capturing completed
-  work/decisions/blockers/next steps, or writing "what should I say in daily?"
-  messages. Drafts combine the private work log with local git history from
-  ~/dev/work/epiroc/* so AI-assisted and non-AI committed work can both appear,
-  while excluding personal dotfiles/global agent setup from Teams daily summaries.
-  DO NOT USE FOR: committing work logs, storing secrets, or formal project status
-  reports that need external source-of-truth verification.
+  Maintains a private rolling work log and drafts concise Microsoft Teams daily,
+  end-of-day, and end-of-week summaries. USE FOR: tracking completed work,
+  decisions, blockers, and next steps; writing daily updates; or handling `eod`,
+  "end of day", `eow`, and "end of week" requests. Summaries combine private work
+  logs with local git history from ~/dev/work/epiroc/* while excluding personal
+  dotfiles/global agent setup by default. DO NOT USE FOR: committing work logs,
+  storing secrets, or formal status reports requiring external verification.
 ---
 
 # Daily Standup
 
-Keep a lightweight private work log and turn it into a short Teams-ready daily update.
+Keep a lightweight private work log and turn it into short daily, end-of-day, and end-of-week summaries.
 
 ## Scope
 
@@ -24,10 +23,10 @@ Keep a lightweight private work log and turn it into a short Teams-ready daily u
 
 ## When to Use
 
-- After a meaningful task, code change, investigation, review, meeting preparation, or decision.
-- When the user asks what they worked on today.
-- When the user asks for a daily/standup/Teams update.
-- When wrapping up a session and there is useful progress to preserve.
+- After a meaningful task, code change, investigation, review, meeting preparation, decision, or useful session wrap-up.
+- When the user asks what they worked on or requests a daily/standup/Teams update.
+- When the user says `eod` or "end of day", or asks for an achievement-focused recap of the day.
+- When the user says `eow` or "end of week", or asks for an achievement-focused recap of the week.
 
 ## When Not to Use
 
@@ -60,6 +59,12 @@ Create or update today's file with this structure:
 
 ## Standup
 <latest paste-ready daily summary for the day it will be used>
+
+## End of Day
+<latest achievement-focused EOD summary generated on this date>
+
+## End of Week
+<latest achievement-focused EOW summary generated on this date>
 
 ## Tomorrow / Next
 - <likely next step>
@@ -104,13 +109,13 @@ Sanitize entries:
 
 When asked for a daily update:
 
-1. Determine the work-log date the summary will be used for (default: today's local date; if the user says tomorrow or another date, use that date).
-2. Read that day's work log, plus yesterday's log when useful for carry-over context.
+1. Determine the current local date at execution time. This is always the output work-log date, even when the summary describes work from yesterday or another requested source window.
+2. Ensure `~/.pi/agent/work-log/YYYY-MM-DD.md` exists for the current local date; create it with the standard Work Log Format if missing. Read it, plus yesterday's log when useful for carry-over context.
 3. Scan local git history under `~/dev/work/epiroc/*` for user-authored work from the relevant window (usually yesterday 00:00 through now for a morning daily). Use all local refs/branches so work on non-current branches is not missed. Do not fetch/pull unless the user explicitly asks.
 4. Optionally inspect local `git status` in relevant repos only to catch unlogged current work; summarize as WIP, not done, unless committed or logged as complete.
 5. Reconcile work-log entries, explicit standup inputs, and git history. Prefer the work log for intent/context; use git commits for additional facts. Exclude `~/.dotfiles`, `~/.pi/agent`, global agent skills/settings, shell/editor dotfile changes, and other personal dev-environment maintenance from Teams daily summaries unless the user explicitly asks to include them. Include all other user-explicit standup inputs unless unsafe.
 6. Draft a paste-ready Teams message in first person, 3 sections max.
-7. Write the exact generated summary into `~/.pi/agent/work-log/YYYY-MM-DD.md` under `## Standup`, replacing the previous generated standup for that date rather than duplicating it.
+7. Write the exact generated summary into the current local date's `~/.pi/agent/work-log/YYYY-MM-DD.md` under `## Standup`, replacing the previous generated standup there rather than duplicating it. Never write generated standup output to a past or future dated file.
 
 ### Local Git History Scan
 
@@ -157,21 +162,43 @@ If the user wants something shorter, use:
 Yesterday I ..., today I'm ..., no blockers.
 ```
 
+## Workflow: End of Day (`eod`)
+
+When the user says `eod`, "end of day", or asks for an achievement-focused recap of today:
+
+1. Determine the current local date. Ensure that date's work-log file exists and read it.
+2. Scan user-authored local git history under `~/dev/work/epiroc/*` from local midnight through now, using all local refs. Do not fetch or query external systems unless explicitly asked.
+3. Reconcile the log and git history. Prefer logged intent and validation context; use commits to fill factual gaps. Distinguish completed outcomes from open work.
+4. Draft an encouraging but factual recap with three to five ranked accomplishments. Highlight concrete proof such as tests, measured performance, commits, PRs, or reduced risk. Mention one remaining blocker or open loop when relevant without letting it dominate the recap.
+5. Start with `Close laptop—you ... today.` or an equally direct earned-rest line. End with a bold `End-of-day status:` line; on Friday, use `Weekend status:` instead. Never invent praise, impact, validation, or completion.
+6. Write the exact generated recap under `## End of Day` in the current local date's work log, replacing any previous EOD output there. Never persist it in a past or future dated file.
+
+## Workflow: End of Week (`eow`)
+
+When the user says `eow`, "end of week", or asks for an achievement-focused recap of the week:
+
+1. Determine the current local date and summary window. Default to local Monday 00:00 through now; honor an explicitly requested week or date range.
+2. Ensure the current date's work-log file exists. Read all work logs in the summary window, including the current date.
+3. Scan user-authored local git history under `~/dev/work/epiroc/*` for the same window, using all local refs. Do not fetch or query external systems unless explicitly asked.
+4. Consolidate repeated daily entries into three to five ranked weekly outcomes rather than listing each day. Highlight shipped work, measured gains, quality evidence, reviews/PRs, decisions, and risk reduction. Separate unfinished work from completed wins.
+5. Start with `Close laptop—you ... this week.` or an equally direct earned-weekend line. Mention the most important open loop or blocker when relevant, then end with a bold `Weekend status:` line. Keep the tone warm, specific, and factual.
+6. Write the exact generated recap under `## End of Week` in the current local date's work log, replacing any previous EOW output there. Never persist it in a past or future dated file.
+
 ## Output Rules
 
 - When tracking work as part of another task, mention at most one short sentence: `Updated the work log.`
-- When drafting Teams text, output only the draft unless the user asks for explanation; still update the target day's `## Standup` section first.
-- Match the user's preferred casual standup tone when provided; concise sentence bullets are better than formal project-report bullets.
-- User-explicit standup items are mandatory in the summary unless they would expose secrets or sensitive details; if they must be sanitized, keep the safe gist.
+- For Teams, EOD, or EOW requests, first persist the exact output in the matching section of the current local date's work log, then return only that output unless the user asks for explanation.
+- Match the user's preferred casual tone. EOD and EOW recaps should make completed work visible without becoming exaggerated or corporate.
+- User-explicit summary inputs are mandatory unless they would expose secrets or sensitive details; if they must be sanitized, keep the safe gist.
 - Be honest about uncertainty: say `I don't have a log entry for...` or `local git history shows...` rather than inventing.
-- Do not dump commit lists into the chat; summarize them into human standup bullets.
-- Do not include `~/.dotfiles` or global Pi/agent setup changes in Teams daily summaries unless explicitly requested.
+- Do not dump commit lists into chat; summarize them into outcomes.
+- Do not include `~/.dotfiles`, global Pi/agent setup, or other personal environment maintenance in Teams, EOD, or EOW summaries unless explicitly requested.
 
 ## Validation
 
-- [ ] Today's log exists only under `~/.pi/agent/work-log/`.
+- [ ] The current date's log exists only under `~/.pi/agent/work-log/`.
 - [ ] No secrets or sensitive details were logged.
 - [ ] Entries distinguish done, in-progress, blockers, and next steps.
-- [ ] Teams draft is concise and paste-ready.
-- [ ] Local git history under `~/dev/work/epiroc/*` was checked, or skipped with an explicit reason.
-- [ ] Dotfiles/global agent setup work was omitted from the Teams daily summary unless explicitly requested.
+- [ ] Generated Teams, EOD, or EOW output is stored once under its matching section and exactly matches the response.
+- [ ] Local git history under `~/dev/work/epiroc/*` was checked for the requested window, or skipped with an explicit reason.
+- [ ] Dotfiles/global agent setup work was omitted from summaries unless explicitly requested.
