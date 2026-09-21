@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Create a sibling git worktree with a new branch forked from current HEAD,
+# then start/switch to a tmux session for it via tmux-sessionizer.
+# Usage: tmux-worktree [new-branch]
+
+set -euo pipefail
+
+die() {
+  echo "error: $*" >&2
+  # keep the tmux popup/window open long enough to read the error
+  if [[ -n "${TMUX:-}" ]]; then
+    read -rp "press enter to close..."
+  fi
+  exit 1
+}
+
+git rev-parse --show-toplevel >/dev/null 2>&1 || die "not inside a git repository"
+
+repo_root="$(git rev-parse --show-toplevel)"
+repo_name="$(basename "$repo_root")"
+repo_parent="$(dirname "$repo_root")"
+base_ref="$(git rev-parse --short HEAD)"
+base_branch="$(git branch --show-current)"
+
+branch="${1:-}"
+if [[ -z "$branch" ]]; then
+  echo "repo:   $repo_name"
+  echo "base:   ${base_branch:-detached} @ $base_ref"
+  read -rp "new branch name: " branch
+fi
+[[ -z "$branch" ]] && die "no branch name given"
+git check-ref-format --branch "$branch" >/dev/null 2>&1 || die "invalid branch name: $branch"
+
+# dir-safe branch name (slashes -> dashes)
+branch_dir="${branch//\//-}"
+path="$repo_parent/$repo_name-wt-$branch_dir"
+[[ -e "$path" ]] && die "path already exists: $path"
+
+if git show-ref --verify --quiet "refs/heads/$branch"; then
+  # branch exists: check it out in the new worktree (fails if checked out elsewhere)
+  git -C "$repo_root" worktree add "$path" "$branch" || die "worktree add failed (branch checked out elsewhere?)"
+else
+  git -C "$repo_root" worktree add "$path" -b "$branch" || die "worktree add failed"
+fi
+
+exec "$HOME/bin/tmux-sessionizer" "$path"

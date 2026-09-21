@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Remove a git worktree (fzf-picked), kill its tmux session, switch back to the
+# main checkout's session.
+# Usage: tmux-worktree-rm [path]
+
+set -euo pipefail
+
+die() {
+  echo "error: $*" >&2
+  if [[ -n "${TMUX:-}" ]]; then
+    read -rp "press enter to close..."
+  fi
+  exit 1
+}
+
+git rev-parse --show-toplevel >/dev/null 2>&1 || die "not inside a git repository"
+
+main_root="$(git worktree list --porcelain | head -1 | cut -d' ' -f2)"
+
+# linked worktrees only (skip the main checkout)
+mapfile -t worktrees < <(git worktree list --porcelain | awk '/^worktree /{print $2}' | tail -n +2)
+[[ ${#worktrees[@]} -eq 0 ]] && die "no linked worktrees to remove"
+
+target="${1:-}"
+if [[ -z "$target" ]]; then
+  target="$(printf '%s\n' "${worktrees[@]}" | fzf --prompt='remove worktree> ')" || true
+fi
+[[ -z "$target" ]] && exit 0
+[[ "$target" == "$main_root" ]] && die "refusing to remove the main checkout"
+
+branch="$(git -C "$target" branch --show-current || true)"
+
+echo "worktree: $target"
+echo "branch:   ${branch:-detached}"
+read -rp "remove? [y/N] " ok
+[[ "$ok" == "y" || "$ok" == "Y" ]] || exit 0
+
+if ! git -C "$main_root" worktree remove "$target" 2>/dev/null; then
+  read -rp "worktree is dirty or locked. force remove? [y/N] " force
+  [[ "$force" == "y" || "$force" == "Y" ]] || exit 0
+  git -C "$main_root" worktree remove --force "$target" || die "force remove failed"
+fi
+
+if [[ -n "$branch" ]]; then
+  read -rp "also delete branch '$branch'? [y/N] " delbr
+  if [[ "$delbr" == "y" || "$delbr" == "Y" ]]; then
+    git -C "$main_root" branch -D "$branch"
+  fi
+fi
+
+# tmux cleanup: switch away if we're in the removed worktree's session, then kill it
+if [[ -n "${TMUX:-}" ]]; then
+  session_name="$(basename "$target" | tr . _)"
+  main_session="$(basename "$main_root" | tr . _)"
+  if tmux list-sessions -F '#S' | grep -qx "$session_name"; then
+    current="$(tmux display-message -p '#S')"
+    if [[ "$current" == "$session_name" ]]; then
+      "$HOME/bin/tmux-sessionizer" "$main_root"
+    fi
+    tmux kill-session -t "$session_name"
+  fi
+fi
+
+echo "removed: $target"
