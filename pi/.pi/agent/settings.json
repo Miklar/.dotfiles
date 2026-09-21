@@ -20,7 +20,9 @@
       ],
       "prompts": [],
       "themes": []
-    }
+    },
+    "npm:pi-subagents",
+    "npm:@dietrichgebert/ponytail"
   ],
   "enabledModels": [
     "github-copilot/gpt-5.5",

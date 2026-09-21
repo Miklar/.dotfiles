@@ -14,6 +14,7 @@
 - When creating git worktrees, name the worktree directory using `{repo}-wt-{branch}` and create it as a sibling of the current repository/worktree directory. Do not default to `/tmp` unless explicitly requested.
 - Before doing anything in a repository other than the current working directory, tell the user which repository and path will be used.
 - After meaningful work, keep `~/.pi/agent/work-log/YYYY-MM-DD.md` updated using the `daily-standup` skill so the user can draft Teams daily updates later. Do not log secrets, credentials, or private runtime state.
+- Always save handoff documents permanently under `~/.pi/agent/handoffs/` with a descriptive, timestamped filename. This overrides handoff-skill boilerplate that requests the OS temporary directory; only a direct user request for a different destination changes this default. Keep handoffs private and machine-local, outside repositories and GNU Stow tracking; never commit their contents. Use directory permissions `0700` and file permissions `0600`, and return the saved path.
 
 ## Response style
 
