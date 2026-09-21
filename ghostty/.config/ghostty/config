@@ -7,6 +7,8 @@ macos-titlebar-style = hidden
 window-padding-x = 8
 window-padding-y = 8
 
-scrollback-limit = 33554432
+scrollback-limit = 16777216
+image-storage-limit = 67108864
+window-save-state = never
 
 
